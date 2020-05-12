@@ -92,6 +92,17 @@ A more efficient source identification scheme requires that each redundant T140b
       <t>
 	A fall-back mixing procedure is specified for cases when the negotiation fails.
       </t>
+	<section numbered="true" toc="default">
+		<name>Selected solution and considered alternative</name>
+		<t>
+   The mechanism specified in the present document makes use of the RTP
+   mixer model specified in RFC3550<xref target="RFC3550" format="default"/>.  
+   From some points of view, use of
+   the RTP translator model specified in RFC 3550 would be more
+   efficient, because then the text packets can pass the translator with only
+   minor modification.  However, there may be a lack of support 
+   for the translator model in existing RTP implementations, and therefore the more common RTP-mixer model was selected.
+		</t>
     </section>
     <section numbered="true" toc="default">
       <name>Nomenclature</name>
@@ -735,7 +746,16 @@ The requirement to transfer information about the user in RTCP reports in SDES, 
     </section>
     <section numbered="true" toc="default">
       <name>Change history</name>
+	    <section numbered="true" toc="default">
+        <name>Changes to draft-ietf-avtcore-multi-party-rtt-mix-01</name>
 	  	  	       <section numbered="true" toc="default">
+				    <t>
+					    4. Brief motivation for the solution and why not rtp-translator is used added to intro.
+				       </t>
+				       <t>
+					    7. More limitations for the multi-party unaware mixing method inserted.
+				       </t>
+					    
         <name>Changes from draft-hellstrom-avtcore-multi-party-rtt-source-03 to draft-ietf-avtcore-multi-party-rtt-mix-00</name>
 		<t>
 		Changed file name to draft-ietf-avtcore-multi-party-rtt-mix-00
