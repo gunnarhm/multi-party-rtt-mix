@@ -313,7 +313,8 @@ Note: The CSRC-list in an RTP packet only includes participants who's text is in
 		    </list></t>
             <t hangText="Optional parameter:"><vspace blankLines="0"/> These
             parameters are used to signal the capabilities of a receiver
-            implementation. <list style="hanging">
+		    implementation.</t> 
+		    <list style="hanging">
                 <t hangText="cps:">The maximum number of characters that may be received per second measured over a period of 10 seconds. The default value is 150.</t>
 
               </list></t>
