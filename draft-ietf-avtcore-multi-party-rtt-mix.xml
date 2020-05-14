@@ -579,6 +579,7 @@ When text is received from multiple original sources, the presentation SHOULD pr
 If the presentation presents text from different sources in one common area, the presenting endpoint SHOULD insert text from the local user ended at suitable points merged with received text to indicate the relative timing for when the text groups were completed. In this presentation mode, the receiving endpoint SHALL present the source of the different groups of text.    
 </t>
         <t>A view of a three-party RTT call in chat style is shown in this example .</t>
+	      
           <artwork name="" type="" align="left" alt=""><![CDATA[
               _________________________________________________
              |                                              | |
@@ -609,7 +610,7 @@ If the presentation presents text from different sources in one common area, the
              | of course, I underst                           |
              |________________________________________________|
 ]]></artwork>
-        </figure>
+      
         <t> Figure 2: Example of a three-party RTT call presented in chat style.
 </t>
         <t>Other presentation styles than the chat style may be arranged.
