@@ -755,7 +755,8 @@ The requirement to transfer information about the user in RTCP reports in SDES, 
 				       <t>
 					    7. More limitations for the multi-party unaware mixing method inserted.
 				       </t>
-					    
+		    </section>			       
+	<section numbered="true" toc="default">    
         <name>Changes from draft-hellstrom-avtcore-multi-party-rtt-source-03 to draft-ietf-avtcore-multi-party-rtt-mix-00</name>
 		<t>
 		Changed file name to draft-ietf-avtcore-multi-party-rtt-mix-00
