@@ -186,8 +186,7 @@ The picture below shows a typical 'text/rex' RTP packet with multi-party RTT con
    Figure 1: A 'text/rex' packet with text from three sources A, B, C.
    ]]></artwork>
     </section>
-    <section numbered="true" toc="default">
-      <name>Actions at transmission by a mixer</name>
+    <section numbered="true" toc="default"><name>Actions at transmission by a mixer</name>
       <t>
 A "text/rex" transmitter is sending packets at least at regular transmission intervals as long as there is something (new or redundant T140blocks) to transmit. The default transmission interval for point-to-point operation is 300 ms.
 </t>
@@ -203,7 +202,9 @@ For multi-party operation, it is RECOMMENDED that the mixer sends a packet to ea
 	    <t>
 	      The mixer has its own SSRC, and its own RTP sequence number series. 
 	    </t>
+	    <t>
 The number of redundant generations of T140blocks to include in transmitted packets SHALL be deducted from the SDP negotiation. It SHOULD be set to the minimum of the number declared by the receiver and the transmitter. The same number of redundant generations MUST be used for all sources in the transmissions. The number of generations sent to a receiver SHALL be the same during the whole session unless it is modified by session renegotiation.   	    
+	    </t>
 	    <t>
 	      At time of transmission, the mixer SHALL populate the RTP packet with T140blocks combined from all T140blocks queued for transmission originating from each source as long as this is not in conflict with the allowed number of characters per second or the maximum packet size. These T140blocks SHALL be placed in the packet interleaved with redundant T140blocks and new T140blocks from other sources. The primary and redundant T140blocks from each source are grouped together in "source groups" appearing in the packet in the same order as the corresponding CSRC list member and redundancy header members for the source group. The format of the redundancy header members and the T140blocks in each source group are the same as for the single source possible in the "text/red" format. The SSRC of each source shall be placed as a member in the CSRC-list at a place corresponding to the place of its T140blocks in the packet. The current time SHALL be inserted in the timestamp. The timestamp offset values for empty T140blocks have no relevance but SHOULD be assigned realistic values. 
 </t>
