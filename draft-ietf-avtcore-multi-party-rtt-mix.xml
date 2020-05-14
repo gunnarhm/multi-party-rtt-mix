@@ -94,7 +94,7 @@ A more efficient source identification scheme requires that each redundant T140b
       </t>
 	<section numbered="true" toc="default">
 		<name>Selected solution and considered alternative</name>
-		<t>
+		<t> 
    The mechanism specified in the present document makes use of the RTP
    mixer model specified in RFC3550<xref target="RFC3550" format="default"/>.  
    From some points of view, use of
