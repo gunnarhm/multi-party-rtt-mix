@@ -300,7 +300,7 @@ Note: The CSRC-list in an RTP packet only includes participants who's text is in
 	  </section>
       <section anchor="mediaTypeRegistration" numbered="true" toc="default" ><name>Media Subtype Registration </name>
         <t>This registration is done using the template defined in <xref target="RFC6838"/> and following 
-		<xref target="RFC4855"/>.
+		<xref target="RFC4855"/>.</t>
 	      <dl>
             <dt>Type name:</dt><dd>text</dd>
 
@@ -351,7 +351,7 @@ Note: The CSRC-list in an RTP packet only includes participants who's text is in
 
             <dt>Change controller:</dt><dd> IETF
             AVTCore Working Group delegated from the IESG.</dd>
-          </dl></t>
+          </dl>
 
 	    
     </section>
