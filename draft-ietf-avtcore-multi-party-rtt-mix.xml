@@ -102,7 +102,7 @@ A more efficient source identification scheme requires that each redundant T140b
 	    <t>
 	    The document updates RFC 4102<xref target="RFC4102" format="default"/> and RFC 4103<xref target="RFC4103" format="default"/> by introducing an extended packet format for the multi-party mixing case and more strict rules for the use of redundancy.
 	    </t>
-    </section>
+    
 	<section numbered="true" toc="default">
 		<name>Selected solution and considered alternative</name>
 		<t>
