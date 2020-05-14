@@ -748,8 +748,7 @@ The requirement to transfer information about the user in RTCP reports in SDES, 
       <name>Change history</name>
 	    <section numbered="true" toc="default">
         <name>Changes to draft-ietf-avtcore-multi-party-rtt-mix-01</name>
-	  	  	       <section numbered="true" toc="default">
-				    <t>
+	  	  	       				    <t>
 					    4. Brief motivation for the solution and why not rtp-translator is used added to intro.
 				       </t>
 				       <t>
