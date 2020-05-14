@@ -298,9 +298,9 @@ Note: The CSRC-list in an RTP packet only includes participants who's text is in
       </t>
 
       <section anchor="mediaTypeRegistration" numbered="true" toc="default" ><name>Media Subtype Registration </name>
-        <t>This registration is done using the template defined in <xref
-        target="RFC6838"/> and following <xref target="RFC4855"/>. <list
-            style="hanging">
+        <t>This registration is done using the template defined in <xref target="RFC6838"/> and following 
+		<xref target="RFC4855"/>.
+	      <list style="hanging">
             <t hangText="Type name:">text</t>
 
             <t hangText="Subtype name:">rex</t>
@@ -313,14 +313,14 @@ Note: The CSRC-list in an RTP packet only includes participants who's text is in
 		    </list></t>
             <t hangText="Optional parameter:"><vspace blankLines="0"/> These
             parameters are used to signal the capabilities of a receiver
-		    implementation.</t> 
+		    implementation. 
 		    <list style="hanging">
                 <t hangText="cps:">The maximum number of characters that may be received per second measured over a period of 10 seconds. The default value is 150.</t>
 
               </list></t>
 
             <t hangText="Encoding considerations:"><vspace blankLines="0"/>
-            This media type is framed in RTP and contains binary data and UTF-8 text; see
+            binary; see
             Section 4.8 of <xref target="RFC6838"/>.</t>
 			    
             <t hangText="Security considerations:">See <xref
