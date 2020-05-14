@@ -312,13 +312,9 @@ Note: The CSRC-list in an RTP packet only includes participants who's text is in
 			   
 			    <dt>pt:</dt><dd>A slash-separated list with the payload type number(pt) for the primary text, the first redundant text, the second redundant text etc, that the receiver is capable to receive.</dd> 
 		      </dl></dd>
-		<dt>Optional parameter:</dt><dd> This
+		<dt>Optional parameter: cps:</dt><dd> This
             parameter is used to signal the capabilities of a receiver
-		    implementation. 
-		    <dl>
-                <dt>cps:</dt><dd>The maximum number of characters that may be received per second measured over a period of 10 seconds. The default value is 150.</dd>
-
-		      </dl></dd>
+		    implementation. It indicates the maximum number of characters that may be received per second measured over a period of 10 seconds. The default value is 150.</dd>
 
             <dt>Encoding considerations:</dt>
             <dd>binary; see Section 4.8 of <xref target="RFC6838"/>.</dd>
