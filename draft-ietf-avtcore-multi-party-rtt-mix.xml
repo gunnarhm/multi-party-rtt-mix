@@ -66,6 +66,9 @@ An enhancement for RFC 4103 real-time text mixing is provided in the present spe
       <t>
  A capability exchange is specified so that it can be verified that a participant can handle the multi-party coded real-time text stream.  The capability is indicated by the media subtype "text/rex". 
       </t>
+	    <t>
+The document updates RFC 4102<xref target="RFC4102" format="default"/> and RFC 4103<xref target="RFC4103" format="default"/>
+	    </t>
       <t>
  A brief description about how a mixer can format text for the case when the endpoint is not multi-party aware is also provided.
       </t>
@@ -95,6 +98,11 @@ A more efficient source identification scheme requires that each redundant T140b
       <t>
 	A fall-back mixing procedure is specified for cases when the negotiation results in "text/red" being the only common submedia format.
       </t>
+
+	    <t>
+	    The document updates RFC 4102<xref target="RFC4102" format="default"/> and RFC 4103<xref target="RFC4103" format="default"/> by introducing an extended packet format for the multi-party mixing case and more strict rules for the use of redundancy.
+	    </t>
+    </section>
 	<section numbered="true" toc="default">
 		<name>Selected solution and considered alternative</name>
 		<t>
@@ -106,7 +114,9 @@ A more efficient source identification scheme requires that each redundant T140b
    minor modification.  However, there may be a lack of support 
    for the translator model in existing RTP implementations, and therefore the more common RTP-mixer model was selected.
 		</t>
+
     </section>
+
     <section numbered="true" toc="default">
       <name>Nomenclature</name>
       <t>
@@ -819,6 +829,10 @@ The following pictures are examples of the view on a participant's display for t
    One case that may occur is a gateway to PSTN for communication with textphones (e.g. TTYs). Textphones are limited devices with no multi-party awareness, and it SHOULD therefore be suitable for the gateway to not indicate multi-party awareness for that case. Another solution is that the gateway indicates multi-party capability towards the mixer, and includes the multi-party mixer function for multi-party unaware endpoints itself. This solution makes it possible to make adaptations for the functional limitations of the textphone (TTY). 
       </t>
     </section>
+    <section numbered="true" toc="default">
+      <name>Updates to RFC 4102 and RFC 4103</name>
+  The document updates RFC 4102<xref target="RFC4102" format="default"/> and RFC 4103<xref target="RFC4103" format="default"/> by introducing an extended packet format 'text/rex' for the multi-party mixing case and more strict rules for the use of redundancy, and population of the CSRC list in the packets. Implications for the CSRC list use from RFC 2198<xref target="RFC2198" format="default"/> are hereby not in effect.  
+	</section  
     <section numbered="true" toc="default">
       <name>Congestion considerations</name>
       <t>
