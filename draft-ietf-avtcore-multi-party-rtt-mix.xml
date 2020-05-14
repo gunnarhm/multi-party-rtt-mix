@@ -309,7 +309,7 @@ Note: The CSRC-list in an RTP packet only includes participants who's text is in
 		    <list style="hanging">
 			    <t hangText="rate:">The RTP timestamp (clock) rate. The only valid value is 1000.</t>
 			   
-			    <t hangText="pt:">A slash-separated list with the payload type number(pt) for the primary text/ the first redundant text/ the second redundant text etc, that the receiver is capable to receive.</t> 
+			    <t hangText="pt:">A slash-separated list with the payload type number(pt) for the primary text, the first redundant text, the second redundant text etc, that the receiver is capable to receive.</t> 
 		    </list></t>
             <t hangText="Optional parameter:"><vspace blankLines="0"/> These
             parameters are used to signal the capabilities of a receiver
