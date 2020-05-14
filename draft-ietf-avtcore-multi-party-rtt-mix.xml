@@ -574,7 +574,7 @@ The receiving party MAY separate presentation of parts of text from a source in 
 </t>
         <t>
 When text is received from multiple original sources, the presentation SHOULD provide a view where text is added in multiple places simultaneously.
-</t>
+</t> 
         <t>
 If the presentation presents text from different sources in one common area, the presenting endpoint SHOULD insert text from the local user ended at suitable points merged with received text to indicate the relative timing for when the text groups were completed. In this presentation mode, the receiving endpoint SHALL present the source of the different groups of text.    
 </t>
