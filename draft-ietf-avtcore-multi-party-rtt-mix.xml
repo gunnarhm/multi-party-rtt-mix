@@ -296,7 +296,7 @@ The SIP conferencing framework, mainly specified in RFC 4353<xref target="RFC435
       <t>
 Note: The CSRC-list in an RTP packet only includes participants who's text is included in one or more text blocks. It is not the same as the total list of participants in a conference. With audio and video media, the CSRC-list would often contain all participants who are not muted whereas text participants that don't type are completely silent and thus are not represented in RTP packet CSRC-lists.
       </t>
-
+	  </section>
       <section anchor="mediaTypeRegistration" numbered="true" toc="default" ><name>Media Subtype Registration </name>
         <t>This registration is done using the template defined in <xref target="RFC6838"/> and following 
 		<xref target="RFC4855"/>.
