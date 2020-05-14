@@ -66,6 +66,7 @@ An enhancement for RFC 4103 real-time text mixing is provided in the present spe
       <t>
  A capability exchange is specified so that it can be verified that a participant can handle the multi-party coded real-time text stream.  The capability is indicated by an sdp media attribute "rtt-mix". 
       </t>
+	    <t>
 The document updates RFC 4102<xref target="RFC4102" format="default"/> and RFC 4103<xref target="RFC4103" format="default"/>
 	    </t>
       <t>
