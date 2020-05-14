@@ -325,8 +325,7 @@ Note: The CSRC-list in an RTP packet only includes participants who's text is in
             Section 4.8 of <xref target="RFC6838"/>.</t>
 			    
             <t hangText="Security considerations:">See <xref
-            target="Security"/> of RFC xxxx. <vspace
-            blankLines="0"/> [RFC Editor: Upon publication as an RFC, please
+            target="Security"/> of RFC xxxx. [RFC Editor: Upon publication as an RFC, please
             replace "XXXX" with the number assigned to this document and
             remove this note.]</t>
 
@@ -334,11 +333,9 @@ Note: The CSRC-list in an RTP packet only includes participants who's text is in
 
             <t hangText="Published specification:">RFC XXXX. [RFC
             Editor: Upon publication as an RFC, please replace "XXXX" with the
-            number assigned to this document and remove this note.] <vspace
-            blankLines="0"/></t>
+            number assigned to this document and remove this note.]</t>
 
-            <t hangText="Applications which use this media type:"><vspace
-            blankLines="0"/> For example: Text conferencing tools, multimedia conferencing tools.</t>
+            <t hangText="Applications which use this media type:"> For example: Text conferencing tools, multimedia conferencing tools.</t>
 
 	    <t hangText="Fragment identifier considerations:">N/A.</t>
 
@@ -940,8 +937,7 @@ Note: The CSRC-list in an RTP packet only includes participants who's text is in
         <xi:include href="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.3550.xml"/>
 	<xi:include href="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6263.xml"/> 
 	<xi:include href="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6838.xml"/>
-        <xi:include href="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.4855.xml"/>
-	<xi:include href="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.4856.xml"/> 
+        <xi:include href="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.4855.xml"/> 
 	      
 	<reference anchor="T140" target="https://www.itu.int/rec/T-REC-T.140-199802-I/en">
           <front>
