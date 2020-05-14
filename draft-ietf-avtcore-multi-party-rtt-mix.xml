@@ -125,6 +125,7 @@ A more efficient source identification scheme requires that each redundant T140b
 The scheme for identification of source of redundant transmissions is intended for transmission from entities taking the mixer role in centralised mixing configurations for RTT. It is intended for reception by both endpoints and mixers.
       </t>
     </section>
+</section>
     <section numbered="true" toc="default">
       <name>Use of fields in the RTP packets</name>
       <t>
