@@ -29,7 +29,7 @@
   <!-- xml2rfc v2v3 conversion 2.42.0 -->
   <front>
     <title abbrev="RTP-mixer format for multi-party RTT">RTP-mixer formatting of multi-party Real-time text</title>
-    <seriesInfo name="Internet-Draft" value="draft-ietf-avtcore-multi-party-rtt-mix-01"/>
+    <seriesInfo name="Internet-Draft" value="draft-ietf-avtcore-multi-party-rtt-mix-02"/>
     <author fullname="Gunnar Hellstrom" initials="G" surname="Hellstrom">
       <organization>Gunnar Hellstrom Accessible Communication</organization>
       <address>
@@ -873,6 +873,28 @@ The requirement to transfer information about the user in RTCP reports in SDES, 
     </section>
     <section numbered="true" toc="default">
       <name>Change history</name>
+	  <section numbered="true" toc="default">
+        <name>Changes included in draft-ietf-avtcore-multi-party-rtt-mix-02</name>
+<t>
+Identified issues and comments on actions:
+</t>	
+	<t>
+		SDP and better description and visibility of security by OSRTP RFC 8634 needed. 
+</t>
+<t>
+Expand the description of gatewaying to WebRTC, but decide how much. Can we specify what is needed also for that case here, or shall we do it in the ....-solutions draft?
+</t>
+<t>
+Move 13.2 - multi-party unaware mixing to an appendix, leaving a very brief intro in 13.2. One reason is that it must be evident that an endpoint claiming compliance to the document must mean that it has multi-party awareness.
+</t>
+<t>
+Should there be a negotiable limit of the number of possible simultaneous participants sending text? And if so, how shall a case be handled when the limit is reached?
+</t>
+<t>
+Improve description of the redundancy header in the packet. 
+
+		</t>
+		</section>
 	    <section numbered="true" toc="default">
         <name>Changes to draft-ietf-avtcore-multi-party-rtt-mix-01</name>
 		<t>
