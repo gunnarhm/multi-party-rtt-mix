@@ -374,7 +374,7 @@ Note: The CSRC-list in an RTP packet only includes participants who's text is in
 	    
     </section>
     <section anchor="nego" numbered="true" toc="default">
-      <name>SDP Capability negotiation</name>
+      <name>SDP considerations</name>
       <t>
 There are receiving RTT implementations which implement RFC 4103 <xref target="RFC4103" format="default"/> but not the source separation by the CSRC. Sending mixed text according to the usual CSRC convention from RFC 2198 <xref target="RFC2198" format="default"/> to a device implementing only RFC 4103 <xref target="RFC4103" format="default"/> would risk to lead to unreadable presented text. Therefore, in order to negotiate RTT mixing capability according to the present specification, all devices supporting the present specification for multi-party aware participants SHALL include an sdp media format "text/rex" in the sdp, indicating this capability in offers and answers. Multi-party streams using the coding of the present specification intended for multi-party aware endpoints MUST NOT be sent to devices which have not indicated the "text/rex" format.
 </t>
@@ -386,6 +386,10 @@ Implementations not understanding this format MUST ignore it according to common
 The sdp media format defined here, is named "rex", for extended redundancy.
 It is intended to be used in "text" media descriptions with "text/rex" and "text/t140"  formats. Both formats MUST be declared for the "text/rex" format to be used. 
 It indicates capability to use source indications in the CSRC list and the packet format according to the present specification. It also indicates ability to receive 150 real-time text characters per second. 
+</t>
+<t>
+Security SHOULD be applied. If no other security solution is mandated by the application then RFC 8643 <xref target="RFC8643" format="default"/> MUST be applied. The SDP examples below are expressed without the security additions for simplicity.
+EDITOR NOTE - more about security------
 </t>
       <t>
 SDP offer/answer examples
@@ -829,11 +833,17 @@ The following pictures are examples of the view on a participant's display for t
       <t>
    One case that may occur is a gateway to PSTN for communication with textphones (e.g. TTYs). Textphones are limited devices with no multi-party awareness, and it SHOULD therefore be suitable for the gateway to not indicate multi-party awareness for that case. Another solution is that the gateway indicates multi-party capability towards the mixer, and includes the multi-party mixer function for multi-party unaware endpoints itself. This solution makes it possible to make adaptations for the functional limitations of the textphone (TTY). 
       </t>
+	  <t>
+	  Gateway operation to real-time text in WebRTC may also be required. In WebRTC, RTT is specified in draft-ietf-mmusic-t140-usage-data-channel<xref target="I-D.ietf-mmusic-t140-usage-data-channel" format="default"/>. 
+	  EDITOR NOTE ----- more about this is needed------------
+	</t>  
     </section>
     <section numbered="true" toc="default">
       <name>Updates to RFC 4102 and RFC 4103</name>
-  The document updates RFC 4102<xref target="RFC4102" format="default"/> and RFC 4103<xref target="RFC4103" format="default"/> by introducing an extended packet format 'text/rex' for the multi-party mixing case and more strict rules for the use of redundancy, and population of the CSRC list in the packets. Implications for the CSRC list use from RFC 2198<xref target="RFC2198" format="default"/> are hereby not in effect.  
-	</section  
+  <t>
+  The document updates RFC 4102<xref target="RFC4102" format="default"/> and RFC 4103<xref target="RFC4103" format="default"/> by introducing an extended packet format 'text/rex' for the multi-party mixing case and more strict rules for the use of redundancy, and population of the CSRC list in the packets. Implications for the CSRC list use from RFC 2198<xref target="RFC2198" format="default"/> are hereby not in effect.
+  </t>  
+	</section> 
     <section numbered="true" toc="default">
       <name>Congestion considerations</name>
       <t>
@@ -865,12 +875,25 @@ The requirement to transfer information about the user in RTCP reports in SDES, 
       <name>Change history</name>
 	    <section numbered="true" toc="default">
         <name>Changes to draft-ietf-avtcore-multi-party-rtt-mix-01</name>
+		<t>
+		2,5,6 More efficient format text/rex introduced and attribute a=rtt-mix deleted.
+		</t>
+		<t>
+		3. Brief about use of OSRTP for security included- More needed.
+		</t>
+		
 	  	  	       				    <t>
 					    4. Brief motivation for the solution and why not rtp-translator is used added to intro.
 				       </t>
 				       <t>
 					    7. More limitations for the multi-party unaware mixing method inserted.
 				       </t>
+		<t> 
+		8. Updates to RFC 4102 and 4103 more clearly expressed.
+        </t>
+		<t>
+		9. Gateway to WebRTC started. More needed.
+        </t>		
 		    </section>			       
 	<section numbered="true" toc="default">    
         <name>Changes from draft-hellstrom-avtcore-multi-party-rtt-source-03 to draft-ietf-avtcore-multi-party-rtt-mix-00</name>
@@ -974,7 +997,8 @@ Note: The CSRC-list in an RTP packet only includes participants who's text is in
 	<xi:include href="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6263.xml"/> 
 	<xi:include href="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6838.xml"/>
         <xi:include href="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.4855.xml"/> 
-	      
+	<xi:include href="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8643.xml"/>	
+	<xi:include href="https://xml2rfc.tools.ietf.org/public/rfc/bibxml-ids/reference.I-D.ietf-mmusic-t140-usage-data-channel.xml"/>      
 	<reference anchor="T140" target="https://www.itu.int/rec/T-REC-T.140-199802-I/en">
           <front>
             <title>Recommendation ITU-T T.140 (02/1998), Protocol for
