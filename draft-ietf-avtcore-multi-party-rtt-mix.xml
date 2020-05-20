@@ -182,7 +182,7 @@ The bits in the header are specified as follows:
 
 <dt>timestamp offset:</dt><dd>  14 bits Unsigned offset of timestamp of this block
    relative to timestamp given in RTP header.  The offset is a time to be subtracted from the current
-   timestamp to determine the timestamp of the data when this block was received to the mixer. For primary data, the resulting time is the time when the data or the youngest part of the data was received by the mixer. If the timestamp offset would be >15 000, it is set to 15 000. For redundant data, the resulting time the resulting time is the time when the data was sent as primary. If the value would be >15 000, then it SHALL be set to 15 000 plus 300 times the redundancy level of the data. The high values appear only in exceptional cases, e.g. when some data has been held in order to keep the text flow under the cps limit.</dd>
+   timestamp to determine the timestamp of the data when this block was received to the mixer. For primary data from a mixer, the resulting time is the time when the data or the youngest part of the data was received by the mixer. For primary data from an endpoint, only one primary data is included last in the packet. If the timestamp offset would be >15 000, it is set to 15 000. For redundant data, the resulting time the resulting time is the time when the data was sent as primary. If the value would be >15 000, then it SHALL be set to 15 000 plus 300 times the redundancy level of the data. The high values appear only in exceptional cases, e.g. when some data has been held in order to keep the text flow under the cps limit.</dd>
 
 <dt>block length:</dt><dd>  10 bits Length in bytes of the corresponding data
    block excluding header.</dd>
@@ -877,16 +877,36 @@ The following pictures are examples of the view on a participant's display for t
     </section>
     <section numbered="true" toc="default">
       <name>Gateway Considerations</name>
+      <section numbered="true" toc="default">
+        <name>Gateway considerations with Textphones (e.g. TTYs).</name>
       <t>
    Multi-party RTT sessions may involve gateways of different kinds. Gateways involved in setting up sessions SHALL correctly reflect the multi-party capability or unawareness of the combination of the gateway and the remote endpoint beyond the gateway.
       </t>
       <t>
    One case that may occur is a gateway to PSTN for communication with textphones (e.g. TTYs). Textphones are limited devices with no multi-party awareness, and it SHOULD therefore be suitable for the gateway to not indicate multi-party awareness for that case. Another solution is that the gateway indicates multi-party capability towards the mixer, and includes the multi-party mixer function for multi-party unaware endpoints itself. This solution makes it possible to make adaptations for the functional limitations of the textphone (TTY).
       </t>
+    </section>
+      <section numbered="true" toc="default">
+        <name>Gateway considerations with WebRTC.</name>
 	  <t>
 	  Gateway operation to real-time text in WebRTC may also be required. In WebRTC, RTT is specified in draft-ietf-mmusic-t140-usage-data-channel<xref target="I-D.ietf-mmusic-t140-usage-data-channel" format="default"/>.
-	  EDITOR NOTE ----- more about this is needed------------
-	</t>
+  </t>
+  <t>
+    A multi-party bridge may have functionality for communicating by RTT in both RTP streams with RTT and WebRTC t140 data channels. Other configurations may consist of a multi-party bridge with either technology for RTT transport and a separate gateway for conversion of the text communication streams between RTP and t140 data channel.
+  </t>
+  <t>
+In WebRTC, it is assumed that for a multi-party session, one t140 data channel is established for each source from a gateway or bridge to each participant. Each participant also has a data channel with two-way connection with the gateway or bridge.
+</t>
+<t>
+  The t140 channel used both ways is for text from the WebRTC user and from the bridge or gateway itself to the WebRTC user. The label parameter of this t140 channel is used as NAME field in RTCP to participants on the RTP side. The other t140 channels are only for text from other participants to the WebRTC user.
+</t>
+<t>
+  When a new participant has entered the session with RTP transport of rtt, a new t140 channel SHOULD be established to WebRTC users with the label parameter composed from the NAME field in RTCP on the RTP side.
+</t>
+<t>
+  When a new participant has entered the multi-party session with RTT transport in a WebRTC t140 data channel, the new participant SHOULD be announced by a notification to RTP users. The label parameter from the WebRTC side SHOULD be used as the NAME RTCP field on the RTP side.
+  </t>
+</section>
     </section>
     <section numbered="true" toc="default">
       <name>Updates to RFC 4102 and RFC 4103</name>
@@ -933,6 +953,7 @@ Identified issues and comments on actions:
 </t>
 <t>
 Expand the description of gatewaying to WebRTC, but decide how much. Can we specify what is needed also for that case here, or shall we do it in the ....-solutions draft?
+....Initial text included.....
 </t>
 <t>
 Move 13.2 - multi-party unaware mixing to an appendix, leaving a very brief intro in 13.2. One reason is that it must be evident that an endpoint claiming compliance to the document must mean that it has multi-party awareness.
@@ -942,6 +963,7 @@ Should there be a negotiable limit of the number of possible simultaneous partic
 </t>
 <t>
 Improve description of the redundancy header in the packet.
+--done--
 
 		</t>
 		</section>
