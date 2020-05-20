@@ -953,6 +953,7 @@ Identified issues and comments on actions:
 </t>
 <t>
 Expand the description of gatewaying to WebRTC, but decide how much. Can we specify what is needed also for that case here, or shall we do it in the ....-solutions draft?
+....Initial text included.....
 </t>
 <t>
 Move 13.2 - multi-party unaware mixing to an appendix, leaving a very brief intro in 13.2. One reason is that it must be evident that an endpoint claiming compliance to the document must mean that it has multi-party awareness.
