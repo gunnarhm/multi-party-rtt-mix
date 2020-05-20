@@ -142,15 +142,65 @@ The scheme for identification of source of redundant transmissions is intended f
     <section numbered="true" toc="default">
       <name>Use of fields in the RTP packets</name>
       <t>
-RFC 4103<xref target="RFC4103" format="default"/> specifies use of RFC 3550 RTP<xref target="RFC3550" format="default"/>, and a redundancy format "text/red" for increased robustness.
-This specification updates RFC 4102<xref target="RFC4102" format="default"/> and RFC 4103<xref target="RFC4103" format="default"/> by introducing a rule for populating and using the CSRC-list in the RTP packet and extending the redundancy header in order to enhance the performance in multi-party RTT sessions.
+RFC 4103<xref target="RFC4103" format="default"/> specifies use of RFC 3550 RTP<xref target="RFC3550" format="default"/>, and a redundancy format "text/red" for increased robustness of real-time text transmission.
+The current specification updates RFC 4102<xref target="RFC4102" format="default"/> and RFC 4103<xref target="RFC4103" format="default"/> by introducing a rule for populating and using the CSRC-list in the RTP packet and extending the redundancy header in order to enhance the performance in multi-party RTT sessions.
+</t>
+<t>
+  The "text/rex" format is an "n-tuple" of the "text/red" format intended to carry text information from up to 16 sources per packet.
+  The CSRC members, the redundancy header and the T140block areas SHALL be populated with a number of the same fields as they are specified in RFC 4103<xref target="RFC4103" format="default"/> appended in the same order as the sources appear in the CSRC list. The most recent text should be placed as the last text element.
 </t>
       <t>
-When transmitted from a mixer, the members in the CSRC-list SHALL contain the SSRCs of the sources of the T140blocks in the packet. When redundancy is used, text from all included sources MUST have the same number of redundancy generations. The primary, second and further redundant generations of T140blocks are grouped per source in the packet in "source groups" and in the same order as the SSRCs of the sources in the CSRC list.  ( the recommended level of redundancy is to use one primary and two redundant generations of T140blocks.) In some cases, a primary or redundant T140block is empty, but is still represented by a member in the redundancy header.
+When transmitted from a mixer, the members in the CSRC-list SHALL contain the SSRCs of the sources of the T140blocks in the packet. The order of the CSRC members MUST be the same as the order of sources of the T140blocks and redundant header fields. When redundancy is used, text from all included sources MUST have the same number of redundancy generations. The primary, first redundant, second redundant and possible further redundant generations of T140blocks MUST be grouped per source in the packet in "source groups". The recommended level of redundancy is to use one primary and two redundant generations of T140blocks. In some cases, a primary or redundant T140block is empty, but is still represented by a member in the redundancy header.
 </t>
-      <t>
+<t>
 The CC field SHALL show the number of members in the CSRC list.
 </t>
+<t>
+  The RTP header is followed by one or more source groups of data block headers: one header for each text block to be included. Each of these headers except the last provides the timestamp offset and length of the corresponding data block, in addition to the payload type number corresponding to the payload format "text/t140".
+
+       The data block headers are followed by the data
+     fields carrying T140blocks from the sources. Finally, the most recent T140block (if any) follows.
+
+</t>
+
+  <artwork name="" type="" align="left" alt=""><![CDATA[
+  0                   1                    2                   3
+0 1 2 3 4 5 6 7 8 9 0 1 2 3  4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|F|   block PT  |  timestamp offset         |   block length    |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+]]></artwork>
+<t>
+The bits in the header are specified as follows:
+</t>
+<dl>
+    <dt>F:</dt><dd>
+1 bit First bit in header indicates whether another header block
+   follows.  It has value 1 if further header blocks follow, and value 0 if this is the last header block.</dd>
+
+<dt>block PT:</dt><dd> 7 bits RTP payload type number for this block, corresponding to the t140 payload type.</dd>
+
+<dt>timestamp offset:</dt><dd>  14 bits Unsigned offset of timestamp of this block
+   relative to timestamp given in RTP header.  The offset is a time to be subtracted from the current
+   timestamp to determine the timestamp of the data when this block was received to the mixer. For primary data from a mixer, the resulting time is the time when the data or the youngest part of the data was received by the mixer. For primary data from an endpoint, only one primary data is included last in the packet. If the timestamp offset would be >15 000, it is set to 15 000. For redundant data, the resulting time the resulting time is the time when the data was sent as primary. If the value would be >15 000, then it SHALL be set to 15 000 plus 300 times the redundancy level of the data. The high values appear only in exceptional cases, e.g. when some data has been held in order to keep the text flow under the cps limit.</dd>
+
+<dt>block length:</dt><dd>  10 bits Length in bytes of the corresponding data
+   block excluding header.</dd>
+ </dl>
+<t>
+   The last data block is placed last in the packet. The timestamp and block-length fields are derived from the header of this block, since they may be determined from the
+   RTP header and overall packet length.  The header for the final block comprises only a zero F bit, and the block payload type number
+   information corresponding to the t140 format, a total of 8 bits.  This is illustrated in the figure
+   below:
+ </t>
+  <artwork name="" type="" align="left" alt=""><![CDATA[
+                      0 1 2 3 4 5 6 7
+                     +-+-+-+-+-+-+-+-+
+                     |0|   Block PT  |
+                     +-+-+-+-+-+-+-+-+
+                     ]]></artwork>
+
+
       <t>
 This specification departs from section 4 of RFC 2198 <xref target="RFC2198" format="default"/> which associates the whole of the CSRC-list with the primary data and assumes that the same list applies to reconstructed redundant data. In the present specification a T140block is associated with exactly one CSRC list member as described above. Also RFC 2198 <xref target="RFC2198" format="default"/> anticipates infrequent change to CSRCs; implementers should be aware that the order of the CSRC-list according to this specification will vary during transitions between transmission from the mixer of text originated by different participants.
 </t>
@@ -210,7 +260,7 @@ The picture below shows a typical 'text/rex' RTP packet with multi-party RTT con
     </section>
     <section numbered="true" toc="default"><name>Actions at transmission by a mixer</name>
       <t>
-A "text/rex" transmitter is sending packets at least at regular transmission intervals as long as there is something (new or redundant T140blocks) to transmit. The default transmission interval for point-to-point operation is 300 ms.
+A "text/rex" transmitter is sending packets at least at regular transmission intervals as long as there is something (new or redundant T140blocks) to transmit. The default transmission interval that SHOULD be applied is 300 ms.
 </t>
 <t>
 As soon as a participant is known to participate in a session and being available for text reception, a Unicode BOM character SHALL be sent to it according to the procedures in the present document.
@@ -859,16 +909,36 @@ The following pictures are examples of the view on a participant's display for t
     </section>
     <section numbered="true" toc="default">
       <name>Gateway Considerations</name>
+      <section numbered="true" toc="default">
+        <name>Gateway considerations with Textphones (e.g. TTYs).</name>
       <t>
    Multi-party RTT sessions may involve gateways of different kinds. Gateways involved in setting up sessions SHALL correctly reflect the multi-party capability or unawareness of the combination of the gateway and the remote endpoint beyond the gateway.
       </t>
       <t>
    One case that may occur is a gateway to PSTN for communication with textphones (e.g. TTYs). Textphones are limited devices with no multi-party awareness, and it SHOULD therefore be suitable for the gateway to not indicate multi-party awareness for that case. Another solution is that the gateway indicates multi-party capability towards the mixer, and includes the multi-party mixer function for multi-party unaware endpoints itself. This solution makes it possible to make adaptations for the functional limitations of the textphone (TTY).
       </t>
+    </section>
+      <section numbered="true" toc="default">
+        <name>Gateway considerations with WebRTC.</name>
 	  <t>
 	  Gateway operation to real-time text in WebRTC may also be required. In WebRTC, RTT is specified in draft-ietf-mmusic-t140-usage-data-channel<xref target="I-D.ietf-mmusic-t140-usage-data-channel" format="default"/>.
-	  EDITOR NOTE ----- more about this is needed------------
-	</t>
+  </t>
+  <t>
+    A multi-party bridge may have functionality for communicating by RTT in both RTP streams with RTT and WebRTC t140 data channels. Other configurations may consist of a multi-party bridge with either technology for RTT transport and a separate gateway for conversion of the text communication streams between RTP and t140 data channel.
+  </t>
+  <t>
+In WebRTC, it is assumed that for a multi-party session, one t140 data channel is established for each source from a gateway or bridge to each participant. Each participant also has a data channel with two-way connection with the gateway or bridge.
+</t>
+<t>
+  The t140 channel used both ways is for text from the WebRTC user and from the bridge or gateway itself to the WebRTC user. The label parameter of this t140 channel is used as NAME field in RTCP to participants on the RTP side. The other t140 channels are only for text from other participants to the WebRTC user.
+</t>
+<t>
+  When a new participant has entered the session with RTP transport of rtt, a new t140 channel SHOULD be established to WebRTC users with the label parameter composed from the NAME field in RTCP on the RTP side.
+</t>
+<t>
+  When a new participant has entered the multi-party session with RTT transport in a WebRTC t140 data channel, the new participant SHOULD be announced by a notification to RTP users. The label parameter from the WebRTC side SHOULD be used as the NAME RTCP field on the RTP side.
+  </t>
+</section>
     </section>
     <section numbered="true" toc="default">
       <name>Updates to RFC 4102 and RFC 4103</name>
@@ -915,6 +985,7 @@ Identified issues and comments on actions:
 </t>
 <t>
 Expand the description of gatewaying to WebRTC, but decide how much. Can we specify what is needed also for that case here, or shall we do it in the ....-solutions draft?
+....Initial text included.....
 </t>
 <t>
 Move 13.2 - multi-party unaware mixing to an appendix, leaving a very brief intro in 13.2. One reason is that it must be evident that an endpoint claiming compliance to the document must mean that it has multi-party awareness.
@@ -924,6 +995,8 @@ Should there be a negotiable limit of the number of possible simultaneous partic
 </t>
 <t>
 Improve description of the redundancy header in the packet.
+
+--done--
 
 		</t>
 		</section>
