@@ -437,13 +437,17 @@ The sdp media format defined here, is named "rex", for extended redundancy.
 It is intended to be used in "text" media descriptions with "text/rex" and "text/t140"  formats. Both formats MUST be declared for the "text/rex" format to be used.
 It indicates capability to use source indications in the CSRC list and the packet format according to the present specification. It also indicates ability to receive 150 real-time text characters per second.
 </t>
+<section anchor="security" numbered="true" toc="default">
+  <name>Security for session control and media</name>
 <t>
-Security SHOULD be applied. If no other security solution is mandated by the application then RFC 8643 <xref target="RFC8643" format="default"/> MUST be applied. The SDP examples below are expressed without the security additions for simplicity.
-EDITOR NOTE - more about security------
+
+Security SHOULD be applied on both session control and media. In applications where legacy endpoints without security may exist, a negotiation between security and no security SHOULD be applied. If no other security solution is mandated by the application, then RFC 8643 OSRTP<xref target="RFC8643" format="default"/> SHOULD be applied to negotiate SRTP media security with DTLS. Most SDP examples below are expressed without the security additions for simplicity. The principles (but not all details) for applying DTLS-SRTP security is shown in a couple of the following examples.
+
 </t>
-      <t>
-SDP offer/answer examples
-</t>
+</section>
+<section anchor="SDP-examples" numbered="true" toc="default">
+  <name>SDP offer/answer examples</name>
+
       <artwork name="" type="" align="left" alt=""><![CDATA[
  Offer example for just multi-party capability:
 
@@ -480,7 +484,35 @@ Offer example for both traditional "text/red" and multi-party format:
  ]]></artwork>
  <artwork name="" type="" align="left" alt=""><![CDATA[
 
-Answer example from a multi-party unaware device:
+ Offer example for both traditional "text/red" and multi-party format
+ including security:
+       a=fingerprint: SHA-1 \
+       4A:AD:B9:B1:3F:82:18:3B:54:02:12:DF:3E:5D:49:6B:19:E5:7C:AB
+       m=text 11000 RTP/AVP 101 100 98
+       a=rtpmap:98 t140/1000
+       a=rtpmap:100 red/1000
+       a=rtpmap:101 rex/1000
+       a=fmtp:100 98/98/98
+       a=fmtp:101 98/98/98
+ ]]></artwork>
+ <t>The "Fingerprint" is sufficient to offer DTLS-SRTP, with the media line still indicating RTP/AVP.
+ </t>
+ <artwork name="" type="" align="left" alt=""><![CDATA[
+  Answer example  from a multi-party capable device including security
+       a=fingerprint: SHA-1 \
+       FF:FF:FF:B1:3F:82:18:3B:54:02:12:DF:3E:5D:49:6B:19:E5:7C:AB
+       m=text 11000 RTP/AVP 101 98
+       a=rtpmap:98 t140/1000
+       a=rtpmap:101 rex/1000
+       a=fmtp:101 98/98/98
+  ]]></artwork>
+  <t>
+  With the "fingerprint" the device acknowledges use of SRTP/DTLS.
+  </t>
+ <artwork name="" type="" align="left" alt=""><![CDATA[
+
+Answer example from a multi-party unaware device that also
+does not support security:
 
       m=text 12000 RTP/AVP 100 98
       a=rtpmap:98 t140/1000
@@ -963,6 +995,7 @@ Should there be a negotiable limit of the number of possible simultaneous partic
 </t>
 <t>
 Improve description of the redundancy header in the packet.
+
 --done--
 
 		</t>
