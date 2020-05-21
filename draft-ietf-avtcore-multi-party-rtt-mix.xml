@@ -25,11 +25,11 @@
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of popular PIs -->
-<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" consensus="true" docName="draft-ietf-avtcore-multi-party-rtt-mix-02" ipr="trust200902" updates="RFC 4102, RFC 4103" obsoletes="" submissionType="IETF" xml:lang="en" tocInclude="true" tocDepth="2" symRefs="true" sortRefs="true" version="3">
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" consensus="true" docName="draft-ietf-avtcore-multi-party-rtt-mix-03" ipr="trust200902" updates="RFC 4102, RFC 4103" obsoletes="" submissionType="IETF" xml:lang="en" tocInclude="true" tocDepth="2" symRefs="true" sortRefs="true" version="3">
   <!-- xml2rfc v2v3 conversion 2.42.0 -->
   <front>
     <title abbrev="RTP-mixer format for multi-party RTT">RTP-mixer formatting of multi-party Real-time text</title>
-    <seriesInfo name="Internet-Draft" value="draft-ietf-avtcore-multi-party-rtt-mix-02"/>
+    <seriesInfo name="Internet-Draft" value="draft-ietf-avtcore-multi-party-rtt-mix-03"/>
     <author fullname="Gunnar Hellstrom" initials="G" surname="Hellstrom">
       <organization>Gunnar Hellstrom Accessible Communication</organization>
       <address>
@@ -116,7 +116,7 @@ A more efficient source identification scheme requires that each redundant T140b
 		</t>
 
     </section>
- 
+
     <section numbered="true" toc="default">
       <name>Nomenclature</name>
       <t>
@@ -498,7 +498,7 @@ Offer example for both traditional "text/red" and multi-party format:
  <t>The "Fingerprint" is sufficient to offer DTLS-SRTP, with the media line still indicating RTP/AVP.
  </t>
  <artwork name="" type="" align="left" alt=""><![CDATA[
-  Answer example  from a multi-party capable device including security
+  Answer example from a multi-party capable device including security
        a=fingerprint: SHA-1 \
        FF:FF:FF:B1:3F:82:18:3B:54:02:12:DF:3E:5D:49:6B:19:E5:7C:AB
        m=text 11000 RTP/AVP 101 98
@@ -530,6 +530,7 @@ A party who has negotiated the "text/rex" format MUST populate the CSRC-list and
 
       </t>
     </section>
+	</section>
     <section numbered="true" toc="default">
       <name>Examples</name>
       <t>
@@ -975,28 +976,26 @@ The requirement to transfer information about the user in RTCP reports in SDES, 
     </section>
     <section numbered="true" toc="default">
       <name>Change history</name>
+      <section numbered="true" toc="default">
+          <name>Changes included in draft-ietf-avtcore-multi-party-rtt-mix-03</name>
+<t>
+
+
+
+</t>
+    </section>
 	  <section numbered="true" toc="default">
         <name>Changes included in draft-ietf-avtcore-multi-party-rtt-mix-02</name>
-<t>
-Identified issues and comments on actions:
-</t>
-	<t>
-		SDP and better description and visibility of security by OSRTP RFC 8634 needed.
-</t>
-<t>
-Expand the description of gatewaying to WebRTC, but decide how much. Can we specify what is needed also for that case here, or shall we do it in the ....-solutions draft?
-....Initial text included.....
-</t>
-<t>
-Move 13.2 - multi-party unaware mixing to an appendix, leaving a very brief intro in 13.2. One reason is that it must be evident that an endpoint claiming compliance to the document must mean that it has multi-party awareness.
-</t>
-<t>
-Should there be a negotiable limit of the number of possible simultaneous participants sending text? And if so, how shall a case be handled when the limit is reached?
-</t>
-<t>
-Improve description of the redundancy header in the packet.
 
---done--
+	<t>
+SDP and better description and visibility of security by OSRTP RFC 8634 needed.
+</t>
+<t>
+The description of gatewaying to WebRTC extended.
+</t>
+<t>
+The description of the redundancy header in the packet is improved.
+
 
 		</t>
 		</section>
