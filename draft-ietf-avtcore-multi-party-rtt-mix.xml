@@ -979,9 +979,38 @@ The requirement to transfer information about the user in RTCP reports in SDES, 
       <section numbered="true" toc="default">
           <name>Changes included in draft-ietf-avtcore-multi-party-rtt-mix-03</name>
 <t>
-
-
-
+  Tell that text mixing is N-1. A users own text is not received in the mix.
+</t>
+  <t>
+  In 3. correct the interval to:
+  A "text/rex" transmitter SHOULD send packets distributed in time as long as there is something (new or  redundant T140blocks) to transmit.  The maximum transmission interval SHOULD then be 300 ms. It is RECOMMENDED to send a packet to a receiver as soon as new text  to that receiver is available, as long as the time after the latest sent packet to the same receiver is more than 100 ms, and also the maximum character rate to the receiver is not exceeded. The intention is to keep the latency low while keeping a good protection against text loss in bursty packet loss conditions.
+</t>
+<t>
+  In 1.3 say that the format is used both ways.
+</t>
+<t>
+  In 13.1 change presentation area to presentation field so that reader does not think it shall be totally separated.
+</t>
+<t>
+  In Performance and intro, tell the performance in number of simultaneous sending users and introduced delay 16, 100 vs requirements 5 500.
+</t>
+  <t>
+  Clarify redundancy level per connection.
+</t>
+<t>
+  Timestamp also for the last data header. To make it possible for all text to have time offset as for transmission from the source. Make that header equal to the others.
+</t>
+<t>
+  Mixer always use the CSRC list, even for its own BOM.
+</t>
+<t>
+  Combine all talk about transmission interval (300 ms vs when text has arrived) in section 3 in one paragraph or close to each other.
+</t>
+<t>
+  Document the goal of good performance with low delay for 5 simultaneous typers in the introduction.
+</t>
+<t>
+  Describe better that only primary text shall be sent on to receivers. Redundancy and loss must be resolved by the mixer.
 </t>
     </section>
 	  <section numbered="true" toc="default">
