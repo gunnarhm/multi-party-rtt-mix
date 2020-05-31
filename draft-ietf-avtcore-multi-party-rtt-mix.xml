@@ -422,7 +422,6 @@ Note: The CSRC-list in an RTP packet only includes participants who's text is in
             transfer via RTP <xref target="RFC3550"/>.</dd>
 
             <dt>Author:</dt><dd>Gunnar Hellstrom &lt;gunnar.hellstrom@ghaccess.se&gt;</dd>
-
             <dt>Change controller:</dt><dd> IETF
             AVTCore Working Group delegated from the IESG.</dd>
           </dl>
@@ -989,6 +988,41 @@ The requirement to transfer information about the user in RTCP reports in SDES, 
           <name>Changes included in draft-ietf-avtcore-multi-party-rtt-mix-03</name>
 <t>
 Mention possible need to mute and raise hands as for other media.   ---done ----
+</t>
+<t>
+  Make sure that use in two-party calls is also possible and explained. - may need more wording -
+</t>
+<t>
+  Clarify the RTT is often used together with other media. --done--
+</t>
+<t>
+  Tell that text mixing is N-1. A users own text is not received in the mix. -done-
+</t>
+  <t>
+  In 3. correct the interval to:
+  A "text/rex" transmitter SHOULD send packets distributed in time as long as there is something (new or  redundant T140blocks) to transmit.  The maximum transmission interval SHOULD then be 300 ms. It is RECOMMENDED to send a packet to a receiver as soon as new text  to that receiver is available, as long as the time after the latest sent packet to the same receiver is more than 150 ms, and also the maximum character rate to the receiver is not exceeded. The intention is to keep the latency low while keeping a good protection against text loss in bursty packet loss conditions.  -done-
+</t>
+<t>
+  In 1.3 say that the format is used both ways. -done-
+</t>
+<t>
+  In 13.1 change presentation area to presentation field so that reader does not think it shall be totally separated. -done-
+</t>
+<t>
+  In Performance and intro, tell the performance in number of simultaneous sending users and introduced delay 16, 150 vs requirements 5 vs 500. -done --
+</t>
+  <t>
+  Clarify redundancy level per connection.  -done-
+</t>
+<t>
+  Timestamp also for the last data header. To make it possible for all text to have time offset as for transmission from the source. Make that header equal to the others. -done-
+</t>
+<t>
+  Mixer always use the CSRC list, even for its own BOM. -done-
+</t>
+<t>
+  Combine all talk about transmission interval (300 ms vs when text has arrived) in section 3 in one paragraph or close to each other. -done-
+</t>
 <t>
   Make sure that use in two-party calls is also possible and explained. - may need more wording -
 </t>
