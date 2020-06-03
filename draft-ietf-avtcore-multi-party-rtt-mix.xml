@@ -986,7 +986,7 @@ The following pictures are examples of the view on a participant's display for t
    One case that may occur is a gateway to PSTN for communication with textphones (e.g. TTYs). Textphones are limited devices with no multi-party awareness, and it SHOULD therefore be suitable for the gateway to not indicate multi-party awareness for that case. Another solution is that the gateway indicates multi-party capability towards the mixer, and includes the multi-party mixer function for multi-party unaware endpoints itself. This solution makes it possible to make adaptations for the functional limitations of the textphone (TTY).
       </t>
       <t>
-   More information on gateways to textphones (TTYs) is found in RFC 5194<xref target="RFC5194" format="default"/> <
+   More information on gateways to textphones (TTYs) is found in RFC 5194<xref target="RFC5194" format="default"/>
       </t>
 
     </section>
