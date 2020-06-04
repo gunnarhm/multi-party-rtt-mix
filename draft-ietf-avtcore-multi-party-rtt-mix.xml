@@ -453,7 +453,7 @@ The SIP conferencing framework, mainly specified in RFC 4353<xref target="RFC435
             <dt>Subtype name:</dt><dd>rex</dd>
 
             <dt>Required parameters:</dt><dd>
-		    <dl hanging="false">
+		    <dl>
 			    <dt>rate:</dt><dd>The RTP timestamp (clock) rate. The only valid value is 1000.</dd>
 
 			    <dt>pt:</dt><dd>A slash-separated list with the payload type number(pt) for the primary text, the first redundant text, the second redundant text etc, that the receiver is capable to receive.</dd>
