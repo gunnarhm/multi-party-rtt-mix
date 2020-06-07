@@ -25,11 +25,11 @@
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of popular PIs -->
-<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" consensus="true" docName="draft-ietf-avtcore-multi-party-rtt-mix-05" ipr="trust200902" updates="RFC 4102, RFC 4103" obsoletes="" submissionType="IETF" xml:lang="en" tocInclude="true" tocDepth="2" symRefs="true" sortRefs="true" version="3">
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" consensus="true" docName="draft-ietf-avtcore-multi-party-rtt-mix-06" ipr="trust200902" updates="RFC 4102, RFC 4103" obsoletes="" submissionType="IETF" xml:lang="en" tocInclude="true" tocDepth="2" symRefs="true" sortRefs="true" version="3">
   <!-- xml2rfc v2v3 conversion 2.42.0 -->
   <front>
     <title abbrev="RTP-mixer format for multi-party RTT">RTP-mixer formatting of multi-party Real-time text</title>
-    <seriesInfo name="Internet-Draft" value="draft-ietf-avtcore-multi-party-rtt-mix-05"/>
+    <seriesInfo name="Internet-Draft" value="draft-ietf-avtcore-multi-party-rtt-mix-06"/>
     <author fullname="Gunnar Hellstrom" initials="G" surname="Hellstrom">
       <organization>Gunnar Hellstrom Accessible Communication</organization>
       <address>
@@ -447,20 +447,23 @@ The SIP conferencing framework, mainly specified in RFC 4353<xref target="RFC435
       <section anchor="mediaTypeRegistration" numbered="true" toc="default" ><name>Media Subtype Registration </name>
         <t>This registration is done using the template defined in <xref target="RFC6838"/> and following
 		<xref target="RFC4855"/>.</t>
-	      <dl>
+	      <dl newline="true">
             <dt>Type name:</dt><dd>text</dd>
 
             <dt>Subtype name:</dt><dd>rex</dd>
 
             <dt>Required parameters:</dt><dd>
-		    <dl>
+		    <dl newline="true">
 			    <dt>rate:</dt><dd>The RTP timestamp (clock) rate. The only valid value is 1000.</dd>
 
 			    <dt>pt:</dt><dd>A slash-separated list with the payload type number(pt) for the primary text, the first redundant text, the second redundant text etc, that the receiver is capable to receive.</dd>
 		      </dl></dd>
-		<dt>Optional parameter: cps:</dt><dd> This
-            parameter is used to signal the capabilities of a receiver
+		<dt>Optional parameter:</dt><dd>
+     <dl newline="true">
+       <dt>cps:</dt><dd>
+     This parameter is used to signal the capabilities of a receiver
 		    implementation. It indicates the maximum number of characters that may be received per second measured over a period of 10 seconds. The default value is 150.</dd>
+      </dl></dd>
 
             <dt>Encoding considerations:</dt>
             <dd>binary; see Section 4.8 of <xref target="RFC6838"/>.</dd>
@@ -1077,6 +1080,12 @@ The requirement to transfer information about the user in RTCP reports in SDES, 
     </section>
     <section numbered="true" toc="default">
       <name>Change history</name>
+      <section numbered="true" toc="default">
+          <name>Changes included in draft-ietf-avtcore-multi-party-rtt-mix-06</name>
+          <t>
+          Improved definitions list format.
+          </t>
+        </section>
       <section numbered="true" toc="default">
           <name>Changes included in draft-ietf-avtcore-multi-party-rtt-mix-05</name>
           <t>
