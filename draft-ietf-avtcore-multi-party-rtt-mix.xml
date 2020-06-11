@@ -25,11 +25,11 @@
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of popular PIs -->
-<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" consensus="true" docName="draft-ietf-avtcore-multi-party-rtt-mix-05" ipr="trust200902" updates="RFC 4102, RFC 4103" obsoletes="" submissionType="IETF" xml:lang="en" tocInclude="true" tocDepth="2" symRefs="true" sortRefs="true" version="3">
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" consensus="true" docName="draft-ietf-avtcore-multi-party-rtt-mix-06" ipr="trust200902" updates="RFC 4102, RFC 4103" obsoletes="" submissionType="IETF" xml:lang="en" tocInclude="true" tocDepth="2" symRefs="true" sortRefs="true" version="3">
   <!-- xml2rfc v2v3 conversion 2.42.0 -->
   <front>
     <title abbrev="RTP-mixer format for multi-party RTT">RTP-mixer formatting of multi-party Real-time text</title>
-    <seriesInfo name="Internet-Draft" value="draft-ietf-avtcore-multi-party-rtt-mix-05"/>
+    <seriesInfo name="Internet-Draft" value="draft-ietf-avtcore-multi-party-rtt-mix-06"/>
     <author fullname="Gunnar Hellstrom" initials="G" surname="Hellstrom">
       <organization>Gunnar Hellstrom Accessible Communication</organization>
       <address>
@@ -447,20 +447,57 @@ The SIP conferencing framework, mainly specified in RFC 4353<xref target="RFC435
       <section anchor="mediaTypeRegistration" numbered="true" toc="default" ><name>Media Subtype Registration </name>
         <t>This registration is done using the template defined in <xref target="RFC6838"/> and following
 		<xref target="RFC4855"/>.</t>
-	      <dl>
+	      <dl newline="true">
             <dt>Type name:</dt><dd>text</dd>
 
             <dt>Subtype name:</dt><dd>rex</dd>
 
             <dt>Required parameters:</dt><dd>
-		    <dl>
+		    <dl newline="true">
 			    <dt>rate:</dt><dd>The RTP timestamp (clock) rate. The only valid value is 1000.</dd>
 
-			    <dt>pt:</dt><dd>A slash-separated list with the payload type number(pt) for the primary text, the first redundant text, the second redundant text etc, that the receiver is capable to receive.</dd>
+			    <dt>pt:</dt><dd><t>a comma-separated list of RTP payload types.  Because
+     comma is a special character, the list must be a quoted-string
+     (enclosed in double quotes).  Each list element is a mapping of the dynamic payload
+     type number to an embedded Content-type specification for
+     the payload format corresponding to the payload type.
+     The format of the mapping is:
+   </t>
+<t>
+        payload-type-number "=" content-type
+</t>
+<t>
+     If the content-type string includes a comma, then the
+     content-type string MUST be a quoted-string.  If the content-
+     type string does not include a comma, it MAY still be quoted.
+     Since it is part of the list which must itself be a quoted-
+     string, that means the quotation marks MUST be quoted with
+     backslash quoting as specified in RFC 2045.  If the content-
+     type string itself contains a quoted-string, then the
+     requirement for backslash quoting is recursively applied.  To
+     specify the text/rex payload format in SDP, the pt parameter
+     is mapped to an a=fmtp attribute by eliminating the parameter
+     name (pt) and changing the commas to slashes.  For example:
+   </t>
+   <t>
+
+        pt = " = \"text/t140;cps=200,text/t140,text/t140\" "
+</t>
+<t>
+        Implies the following sdp
+</t>
+<artwork name="" type="" align="left" alt=""><![CDATA[
+
+
+        m=text 49170 RTP/AVP 98 100
+        a=rtpmap:98 rex/1000
+        a=fmtp:98 100/100/100
+        a=rtpmap:100 t140/1000
+        a=fmtp:100 cps=200
+]]></artwork>
+</dd>
 		      </dl></dd>
-		<dt>Optional parameter: cps:</dt><dd> This
-            parameter is used to signal the capabilities of a receiver
-		    implementation. It indicates the maximum number of characters that may be received per second measured over a period of 10 seconds. The default value is 150.</dd>
+
 
             <dt>Encoding considerations:</dt>
             <dd>binary; see Section 4.8 of <xref target="RFC6838"/>.</dd>
@@ -502,7 +539,7 @@ The SIP conferencing framework, mainly specified in RFC 4353<xref target="RFC435
 There are receiving RTT implementations which implement RFC 4103 <xref target="RFC4103" format="default"/> but not the source separation by the CSRC. Sending mixed text according to the usual CSRC convention from RFC 2198 <xref target="RFC2198" format="default"/> to a device implementing only RFC 4103 <xref target="RFC4103" format="default"/> would risk to lead to unreadable presented text. Therefore, in order to negotiate RTT mixing capability according to this document, all devices supporting this document for multi-party aware participants SHALL include an SDP media format "text/rex" in the SDP <xref target="RFC4566" format="default"/>, indicating this capability in offers and answers. Multi-party streams using the coding of this document intended for multi-party aware endpoints MUST NOT be sent to devices which have not indicated the "text/rex" format.
 </t>
       <t>
-Implementations not understanding this format MUST ignore it according to common SDP rules.
+Implementations not understanding the "text/rex" format MUST ignore it according to common SDP rules.
       </t>
       <t>
 
@@ -510,6 +547,36 @@ The SDP media format defined here, is named "rex", for extended "red".
 It is intended to be used in "text" media descriptions with "text/rex" and "text/t140"  formats. Both formats MUST be declared for the "text/rex" format to be used.
 It indicates capability to use source indications in the CSRC list and the packet format according to this document. It also indicates ability to receive 150 real-time text characters per second by default.
 </t>
+
+<section anchor="sdpmapping" numbered="true" toc="default">
+  <name>Mapping of media parameters to sdp</name>
+<t>
+   The information carried in the media type registration has a
+   specific mapping to fields in the Session Description Protocol (SDP)
+   , which is commonly used to describe RTP sessions.  When SDP RFC 4566 <xref target="RFC4566" format="default"/>is
+   used to specify sessions employing the "text/rex" format, the mapping
+   is as follows:
+ </t>
+  <ul>
+    <li>
+   The media type ("text") goes in SDP "m=" as the media name.
+ </li>
+<li>
+
+   The media subtype (payload format name) goes in SDP "a=rtpmap" as
+     the encoding name.  The RTP clock rate in "a=rtpmap" MUST be 1000
+     for "text/rex".
+     </li>
+     <li>
+
+   When the payload type is used with redundancy, the level of redundancy is shown by the number of elements in
+     the slash-separated payload type list in the "fmtp" parameter of
+     the "text/rex" media format.
+     </li>
+</ul>
+
+</section>
+
 <section anchor="security" numbered="true" toc="default">
   <name>Security for session control and media</name>
 <t>
@@ -732,7 +799,7 @@ It will be a design decision how to present the missing text markers assigned to
     <section numbered="true" toc="default">
       <name>Performance considerations</name>
       <t>
-This document allows new text from up to 16 sources per packet. A mixer implementing the specification will normally cause a latency of 0 to 150 milliseconds in text from up to 16 simultaneous sources. This performance meets well the realistic requirements for conference and conversational applications for which up to 5 simultaneous sources should not be delayed more than 500 milliseconds by a mixer. In order to achieve good performance, a receiver for multi-party calls SHOULD declare a sufficient CPS value in SDP for the number of allowable characters per second.
+This document allows new text from up to 16 sources per packet. A mixer implementing the specification will normally cause a latency of 0 to 150 milliseconds in text from up to 16 simultaneous sources. This performance meets well the realistic requirements for conference and conversational applications for which up to 5 simultaneous sources should not be delayed more than 500 milliseconds by a mixer. In order to achieve good performance, a receiver for multi-party calls SHOULD declare a sufficient CPS value for the "text/t140" format in SDP for the number of allowable characters per second.
       </t>
       <t>
         As comparison, if the "text/red" format would be used for multi-party communication with its default timing and redundancy, 5 simultaneously sending parties would cause jerky presentation of the text from them in text spurts with 5 seconds intervals. With a reduction of the transmission interval to 150 ms, the time between text spurts for 5 simultaneous sending parties would be 2.5 seconds.
@@ -741,7 +808,7 @@ This document allows new text from up to 16 sources per packet. A mixer implemen
         Five simultaneous sending parties may occasionally occur in a conference with one or two main sending parties and three parties giving very brief comments.
       </t>
 	  <t>
-	  The default maximum rate of reception of real-time text is in RFC 4103 <xref target="RFC4103" format="default"/> specified to be 30 characters per second. The value MAY be modified in the CPS parameter of the FMTP attribute in the media section for RFC 4103. A mixer combining real-time text from a number of sources may have a higher combined flow of text coming from the sources. Endpoints SHOULD therefore specify a suitable higher value for the CPS parameter, corresponding to its real reception capability. A value for CPS of 150 is the default for the "text/rex" format. See RFC 4103 <xref target="RFC4103" format="default"/> for the format and use of the CPS parameter. The same rules apply for the "text/rex" format except for the default value.
+	  The default maximum rate of reception of "text/t140" real-time text is in RFC 4103 <xref target="RFC4103" format="default"/> specified to be 30 characters per second. The value MAY be modified in the CPS parameter of the FMTP attribute in the media section for the "text/t140" media. A mixer combining real-time text from a number of sources may have a higher combined flow of text coming from the sources. Endpoints SHOULD therefore specify a suitable higher value for the CPS parameter, corresponding to its real reception capability. A value for CPS of 150 is the default for the "text/t140" stream in the "text/rex" format. See RFC 4103 <xref target="RFC4103" format="default"/> for the format and use of the CPS parameter. The same rules apply for the "text/rex" format except for the default value.
 	  </t>
     </section>
     <section numbered="true" toc="default">
@@ -1077,6 +1144,21 @@ The requirement to transfer information about the user in RTCP reports in SDES, 
     </section>
     <section numbered="true" toc="default">
       <name>Change history</name>
+      <section numbered="true" toc="default">
+          <name>Changes included in draft-ietf-avtcore-multi-party-rtt-mix-06</name>
+          <t>
+          Improved definitions list format.
+          </t>
+          <t>
+            The format of the media subtype parameters is made to match the requirements.
+          </t>
+          <t>
+            The mapping of media subtype parameters to sdp is included.
+          </t>
+          <t>
+            The CPS parameter belongs to the t140 subtype and does not need to be registered here.
+          </t>
+        </section>
       <section numbered="true" toc="default">
           <name>Changes included in draft-ietf-avtcore-multi-party-rtt-mix-05</name>
           <t>
