@@ -175,7 +175,7 @@ When transmitted from a mixer, a CSRC list is included in the packet. The member
 
   <artwork name="" type="" align="left" alt=""><![CDATA[
   0                   1                    2                   3
-0 1 2 3 4 5 6 7 8 9 0 1 2 3  4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 |F|   block PT  |  timestamp offset         |   block length    |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -188,7 +188,7 @@ Figure 1: The bits in the data header.
 </t>
 <dl>
     <dt>F:</dt><dd>
-1 bit First bit in header indicates whether another header block
+One bit first in the header indicates whether another header block
    follows.  It has value 1 if further header blocks follow, and value 0 if this is the last header block.</dd>
 
 <dt>block PT:</dt><dd> 7 bits RTP payload type number for this block, corresponding to the t140 payload type from the RTPMAP SDP attribute.</dd>
