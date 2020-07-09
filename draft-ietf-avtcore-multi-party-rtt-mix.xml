@@ -109,14 +109,31 @@ A more efficient source identification scheme requires that each redundant T140b
 	<section numbered="true" toc="default">
 		<name>Selected solution and considered alternative</name>
 		<t>
+    A number of alternatives were considered when searching an efficient multi-party method for real-time text. This section explains a few of them briefly.
+    </t>
+<dl spacing="normal">
+  <dt>One RTP stream per source, sent in the same RTP session with "text/red" format.</dt>
+
+<dd>
+   From some points of view, use of multiple RTP streams, one for each source, sent in the same RTP session, called the RTP translator model in RFC 3550 <xref target="RFC3550" format="default"/>, would be efficient, and use exactly the same packet format as RFC 4103, the same payload type and a simple SDP declaration. However, there is currently lack of support for multi-stream RTP in certain implementation technologies. The multi-stream solution would also cause about 40% more overhead than the single RTP stream solution specified in this document for up to 5 simultaneous sending sources and even more at higher loads.
+ </dd>
+ <dt>
+   The "text/red" format in RFC 4103 with shorter transmission interval, and indicating source in CSRC.
+ </dt>
+ <dd>
+   The "text/red" format with "text/t140" payload in a single RTP stream can be sent with e.g. 100 ms packet intervals instead of the regular 300 ms. The source is indicated in the CSRC field. Source switching can then be done every 300 ms while simultaneous transmission occurs. Text sent from a source at the end of the period its text is sent by the mixer will have close to zero extra delay. However, the beginning of the text sent from a source in a transmission period will be delayed, more the more participants transmit text simultaneously. The result will be a jerky impression of the text presentation. When two parties type simultaneously, these two will not experience any delays, while other participants in the same call will have the non-perceivable 150 ms jerkiness of the text streams. With three parties sending simultaneously, the end of text spurts will not be delayed, but a small jerkiness of 450 ms will be experienced in the beginning of each text spurt. With 5 simultaneous transmitting users, the the end of text spurts will not be delayed, but a mean jerkiness of 750 ms will be experienced in the beginning of each text spurt. The 750 ms jerkiness will be noticable and slightly unpleasant, but corresponds in time to what typing humans often cause by hesitation or changing position while typing. A benefit of this method is that no new packet format needs to be introduced and implemented.   
+
+ </dd>
+    <dt>The "text/rex" packet format with up to 15 sources in one packet.</dt>
+    <dd>
    The mechanism specified in this document makes use of the RTP
-   mixer model specified in RFC3550<xref target="RFC3550" format="default"/>.
-   From some points of view, use of
-   the RTP translator model specified in RFC 3550 would be more
-   efficient, because then the text packets can pass the translator with only
-   minor modification.  However, there may be a lack of support
-   for the translator model in existing RTP implementations, and therefore the more common RTP-mixer model was selected. The translator model would also easier cause congestion if many users send text simultaneously.
-		</t>
+   mixer model specified in RFC3550<xref target="RFC3550" format="default"/>. Text from up to 15 sources can be included in each packet. Packets are normally sent every 300 ms. The mean delay will be 150 ms. The sources are indicated in the CSRC list of the RTP packets. A new redundancy packet format is specified, named "text/rex".
+</dd>
+<dt>The presentation planned by the mixer.</dt>
+<dd>
+  It is desirable to have a method that does not require any modifications in existing user devices implementing RFC 4103 for RTT without explicit support of multi-party sessions. This is possible by having the mixer insert a new line and a text formatted source label before each switch of text source in the stream. Switch of source can only be done in places in the text where it does not disturb the perception of the contents. Text from only one source can be presented in real time at a time. The delay will therefore be varying. The method has also other limitations, but is included in this document as a fallback method.
+</dd>
+</dl>
 
     </section>
 
@@ -159,7 +176,7 @@ RFC 4103<xref target="RFC4103" format="default"/> specifies use of RFC 3550 RTP<
 This document updates RFC 4102<xref target="RFC4102" format="default"/> and RFC 4103<xref target="RFC4103" format="default"/> by introducing a format "text/rex" with a rule for populating and using the CSRC-list in the RTP packet and extending the redundancy header to be called a data header. This is done in order to enhance the performance in multi-party RTT sessions.
 </t>
 <t>
-  The "text/rex" format can be seen as an "n-tuple" of the "text/red" format intended to carry text information from up to 16 sources per packet.
+  The "text/rex" format can be seen as an "n-tuple" of the "text/red" format intended to carry text information from up to 15 sources per packet.
 </t>
 <t>
 The CC field SHALL show the number of members in the CSRC list, which is one per source represented in the packet.
@@ -313,7 +330,7 @@ The transmitting party using redundancy SHALL send redundant repetitions of T140
 </section>
 <section numbered="true" toc="default"><name>Maximum number of sources per packet</name>
 	    <t>
-		    Text from a maximum of 16 sources MAY be included in a packet. The reason for this limitation is the maximum number of CSRC list members allowed in a packet. If text from more sources need to be transmitted, the mixer MAY let the sources take turns in having their text transmitted. When stopping transmission of one source to allow another source to have its text sent, all intended redundant generations of the last text from the source to be stopped MUST be transmitted before text from another source can be transmitted. Actively transmitting sources SHOULD be allowed to take turns with short intervals to have their text transmitted.
+		    Text from a maximum of 15 sources MAY be included in a packet. The reason for this limitation is the maximum number of CSRC list members allowed in a packet. If text from more sources need to be transmitted, the mixer MAY let the sources take turns in having their text transmitted. When stopping transmission of one source to allow another source to have its text sent, all intended redundant generations of the last text from the source to be stopped MUST be transmitted before text from another source can be transmitted. Actively transmitting sources SHOULD be allowed to take turns with short intervals to have their text transmitted.
 	    </t>
       <t>
 Note: The CSRC-list in an RTP packet only includes participants who's text is included in text blocks. It is not the same as the total list of participants in a conference. With audio and video media, the CSRC-list would often contain all participants who are not muted whereas text participants that don't type are completely silent and thus are not represented in RTP packet CSRC-lists once their text have been transmitted as primary and the intended number of redundant generations.
@@ -387,7 +404,7 @@ The RTP sequence numbers of the received packets SHALL be monitored for gaps and
 As long as the sequence is correct, each packet SHALL be unpacked in order. The T140blocks SHALL be extracted from the primary areas, and the corresponding SSRCs SHALL be extracted from the corresponding positions in the CSRC list and used for assigning the new T140block to the correct presentation areas (or correspondingly).
 </t>
       <t>
-If a sequence number gap appears and is still there after some defined time for jitter resolution, T140data SHALL be recovered from redundant data. If the gap is wider than the number of generations of redundant T140blocks in the packet, then a t140block SHALL be created with a marker for text loss <xref target="T140ad1" format="default"/> and assigned to the SSRC of the transmitter as a general input from the mixer because in general it is not possible to deduct from which sources text was lost.
+If a sequence number gap appears and is still there after some defined time for jitter resolution, T140data SHALL be recovered from redundant data. If the gap is wider than the number of generations of redundant T140blocks in the packet, then a t140block SHALL be created with a marker for possible text loss <xref target="T140ad1" format="default"/> and assigned to the SSRC of the transmitter as a general input from the mixer because in general it is not possible to deduct from which sources text was lost. It is however likely that the sources which had loss were active in transmission just before or after the sequence number gap. Therefore, the receiver MAY insert the marker for possible text loss <xref target="T140ad1" format="default"/> in the presentation areas corresponding to the sources which had text in the packets just before and after the gap.
 </t>
       <t>
 Then, the T140blocks in the received packet SHALL be retrieved beginning with the highest redundant generation, grouping them with the corresponding SSRC from the CSRC-list and assigning them to the presentation areas per source. Finally the primary T140blocks SHALL be retrieved from the packet and similarly their sources retrieved from the corresponding positions in the CSRC-list, and then assigned to the corresponding presentation areas for the sources.
@@ -778,7 +795,9 @@ Packet 5 is assumed to be dropped in network problems
 Packet 6 is received. The latest received sequence number was 2.
 Recovery is therefore tried for 3,4,5. But there is no coverage
 for seq no 3. A missing text mark (U'FFFD) <xref target="T140ad1" format="default"/>  is created and
-appended to the common mixer reception area.
+appended to the common mixer reception area. A missing text mark (U'FFFD) MAY also be appended in all streams which had text in the packets before and after the gap. That is in this case after A1, and C1, and before B1.
+</t>
+<t>
 For seqno 4, texts C2, B1 and A3 are recovered from the second generation redundancy and appended to
 their respective reception areas.
 For seqno 5, texts B2 and A4 are recovered from the first generation redundancy and appended to their
@@ -787,7 +806,7 @@ Primary text B3 and A5 are received and appended to their
 respective reception areas.
 </t>
 <t>
-  After this sequence, the following has been received: A1,A3, A4, A5; B1, B2, B3; C1, C2. A possible loss is indicated by the missing text mark in time between A1 and A3.
+  After this sequence, the following has been received: A1,A3, A4, A5; B1, B2, B3; C1, C2. A possible loss is indicated by the general missing text mark in time between A1 and A3, and in the streams after A1 and C1 and before B1.
 </t>
       <t>
 With only one or two packets lost, there would not be any need to create a missing text marker, and all text would be recovered.
@@ -799,7 +818,7 @@ It will be a design decision how to present the missing text markers assigned to
     <section numbered="true" toc="default">
       <name>Performance considerations</name>
       <t>
-This document allows new text from up to 16 sources per packet. A mixer implementing the specification will normally cause a latency of 0 to 150 milliseconds in text from up to 16 simultaneous sources. This performance meets well the realistic requirements for conference and conversational applications for which up to 5 simultaneous sources should not be delayed more than 500 milliseconds by a mixer. In order to achieve good performance, a receiver for multi-party calls SHOULD declare a sufficient CPS value for the "text/t140" format in SDP for the number of allowable characters per second.
+This document allows new text from up to 15 sources per packet. A mixer implementing the specification will normally cause a latency of 0 to 150 milliseconds in text from up to 15 simultaneous sources. This performance meets well the realistic requirements for conference and conversational applications for which up to 5 simultaneous sources should not be delayed more than 500 milliseconds by a mixer. In order to achieve good performance, a receiver for multi-party calls SHOULD declare a sufficient CPS value for the "text/t140" format in SDP for the number of allowable characters per second.
       </t>
       <t>
         As comparison, if the "text/red" format would be used for multi-party communication with its default timing and redundancy, 5 simultaneously sending parties would cause jerky presentation of the text from them in text spurts with 5 seconds intervals. With a reduction of the transmission interval to 150 ms, the time between text spurts for 5 simultaneous sending parties would be 2.5 seconds.
@@ -1153,6 +1172,12 @@ The requirement to transfer information about the user in RTCP reports in SDES, 
       <name>Change history</name>
       <section numbered="true" toc="default">
           <name>Changes included in draft-ietf-avtcore-multi-party-rtt-mix-07</name>
+          <t>
+            Added reasoning and recommendation about indication of loss.
+          </t>
+          <t>
+            The highest number of sources in one packet is 15, not 16. Changed.
+          </t>
           <t>
           Added in information on update to RFC 4103 that RFC 4103 explicitly allows addition of FEC method. The redundancy is a kind of forward error correction..
           </t>
