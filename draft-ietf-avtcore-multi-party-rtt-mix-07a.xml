@@ -165,10 +165,51 @@ A more efficient source identification scheme requires that each redundant T140b
     <section numbered="true" toc="default">
       <name>Intended application</name>
       <t>
-The format for multi-party real-time text is primarily intended for use in transmission between mixers and endpoints in centralised mixing configurations. It is also applicable between endpoints as well as between mixers.
+        The format for multi-party real-time text is primarily intended for use in transmission between mixers and endpoints in centralised mixing configurations. It is also applicable between endpoints as well as between mixers. An often mentioned application is for emergency service calls with real-time text and voice, where a calltaker want to make an attended handover of a call to another agent, and stay observing in the session. Multimedia conference sessions with support for participants to contribute in text is another application. Conferences with central support for speech-to-text conversion is yet another mentioned application.
+        </t>
+        <t>
+          In all these applications, normally only one participant at a time will send long text utterances. In some cases, one other participant will occasionally contribute with a longer comment simultaneously. That may also happen in some rare cases when text is interpreted to text in another language in a conference. Apart from these cases, other participants are only expected to contribute with very brief utterings while others are sending text.
+        </t>
+        <t>
+          Text is supposed to be human generated, by some text input means, such as typing on a keyboard or using speech-to-text technology. Occasional small cut-and-paste operations may appear even if that is not the initial purpose of real-time text.
+        </t>
+        <t>
+          The real-time characteristics of real-time text is essential for the participants to be able to contribute to a conversation. If the text is too much delayed from typing a letter to its presentation, then, in some conference situations, the opportunity to comment will be gone and someone else will grab the turn. A delay of more than one second in such situations is an obstacle for good conversation.
+        </t>
       </t>
     </section>
 </section>
+<section numbered="true" toc="default">
+  <name>Specified solutions</name>
+  <section numbered="true" toc="default">
+    <name>Use of the "text/red" and "text/t140" formats of RFC 4103 in a single RTP stream with multiple sources</name>
+    <t>
+This section specifies use of the current format specified in <xref target="RFC4103" format="default"/> for true multi-party real-time text. It is an update of RFC 4103 by a clarification on one way to use it in the multi-party situation. It is done by completing a negotiation of this kind of multi-party capability and by indicating source in the CSRC element in the RTP packets.
+    </t>
+    <section numbered="true" toc="default">
+      <name>Negotiation for use of this method</name>
+    </section>
+    <section numbered="true" toc="default">
+      <name>Use of fields in the RTP packets</name>
+    </section>
+    <section numbered="true" toc="default">
+      <name>Transmission of multi-party contents</name>
+    </section>
+    <section numbered="true" toc="default">
+      <name>Reception of multi-party contents</name>
+    </section>
+    <section numbered="true" toc="default">
+      <name>Performance considerations</name>
+    </section>
+    <section numbered="true" toc="default">
+      <name>Registration of the "RTT-mix" SDP media attribute</name>
+    </section>
+    <section numbered="true" toc="default">
+      <name>------</name>
+    </section>
+  </section>
+    <section numbered="true" toc="default">
+      <name>Use of an extended packet format "text/rex" with text from multiple sources</name>
     <section numbered="true" toc="default">
       <name>Use of fields in the RTP packets</name>
       <t>
@@ -830,6 +871,15 @@ This document allows new text from up to 15 sources per packet. A mixer implemen
 	  The default maximum rate of reception of "text/t140" real-time text is in RFC 4103 <xref target="RFC4103" format="default"/> specified to be 30 characters per second. The value MAY be modified in the CPS parameter of the FMTP attribute in the media section for the "text/t140" media. A mixer combining real-time text from a number of sources may have a higher combined flow of text coming from the sources. Endpoints SHOULD therefore specify a suitable higher value for the CPS parameter, corresponding to its real reception capability. A value for CPS of 150 is the default for the "text/t140" stream in the "text/rex" format. See RFC 4103 <xref target="RFC4103" format="default"/> for the format and use of the CPS parameter. The same rules apply for the "text/rex" format except for the default value.
 	  </t>
     </section>
+  </section>
+  <section numbered="true" toc="default">
+    <name>Mixing for multi-party unaware endpoints</name>
+<t>
+  A method is specified in this document for cases when the participating endpoint does not implement any solution for multi-party presentation of real-time text. The solution requires the mixer to insert text dividers and readable labels and only send text from one source at a time until a suitable point appears for source change. This solution is a fallback method with functional limitations that acts on the presentation level and is further specified in <xref target="UnawareFormat" format="default"/>.
+</t>
+</section>
+</section>
+
     <section numbered="true" toc="default">
       <name>Presentation level considerations</name>
       <t>
@@ -1154,7 +1204,7 @@ The congestion considerations and recommended actions from RFC 4103 <xref target
 
     <section anchor="IANAConsiderations" numbered="true" toc="default">
 	    <name>IANA Considerations</name>
-      <section anchor=reg-rtt-mix numbered="true" toc="default">
+      <section anchor="reg-rtt-mix" numbered="true" toc="default">
   <name>Registration of the "rtt-mix" sdp media attribute</name>
   <t>
 
@@ -1203,7 +1253,7 @@ IANA is asked to register the new sdp attribute "rtt-mix".
 </tr>
 <tr><td>Purpose:
 </td>
-<td>Indicate support for multi-party mixing for real-time text transmission, with the value "rtp-mixer" indicating support for using a common RTP-stream for transmission of text from all sources. Other values may be added by other work for other multi-party mechanisms.
+<td>Indicate support for multi-party mixing for real-time text transmission, with the value "rtp-mixer" indicating support for using a common RTP-stream for transmission of text from all sources with one source at a time and the source indicated in the single CSRC-list member. Other values may be added by other work for other multi-party mechanisms.
 </td>
 </tr>
 <tr><td>O/A procedure
