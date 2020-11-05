@@ -83,19 +83,31 @@ RFC 4103<xref target="RFC4103" format="default"/> specifies use of RFC 3550 RTP 
 <t>
   Real-time text is usually provided together with audio and sometimes with video in conversational sessions.
 </t>
-      <t>
-The redundancy scheme of RFC 4103 <xref target="RFC4103" format="default"/> enables efficient transmission of redundant text in packets together with new text. However the redundancy header format has no source indicators for the redundant transmissions. An assumption has to be made that the redundant parts in a packet are from the same source as the new text. The recommended transmission is one new and two redundant generations of text (T140blocks) in each packet and the recommended transmission interval for two-party use is 300 ms.
+<t>
+A requirement related to multi-party sessions from the presentation level standard T.140 for real-time text is:
+"The display of text from the members of the conversation should be arranged so that the text from
+each participant is clearly readable, and its source and the relative timing of entered text is visualized
+in the display."
+</t>
+<t>
+Another requirement is that the mixing procedure must not introduce delays in the text streams that are experienced disturbing the real-time experience of the receiving users.
 </t>
       <t>
- A mixer, selecting between real-time text input from different sources and transmitting it in a common stream to a conference participant needs to indicate the source of the text in a consistent way to make sure that the receiver can assign the received text to the proper sources for readable presentation. The method for recovering text from redundancy in case of packet loss needs to work in the multi-party case.
+The redundancy scheme of RFC 4103 <xref target="RFC4103" format="default"/> enables efficient transmission of redundant text in packets together with new text. However the redundancy header format has no source indicators for the redundant transmissions. The redundant parts in a packet must therefore be from the same source as the new text. The recommended transmission is one new and two redundant generations of text (T140blocks) in each packet and the recommended transmission interval for two-party use is 300 ms.
+</t>
 
- Capability to use this method is indicated by an sdp media attribute "rtt-mixer".
+<t>
+Real-time text mixers for multi-party sessions therefore need to insert the
+source of each transmitted group of text from a conference participant so that the text can be transmitted interleaved with text groups from different sources in the rate they are created. This enables the text groups to be presented by endpoints in suitable grouping with other text from the same source. The presentation can then be arranged so that text from different sources can be presented in real-time and easily read while it is possible for a reading user to also perceive approximately when the text was created in real time by the different parties. The transmission and mixing is intended to be done in a general way so that presentation can be arranged in a layout decided by the endpoint.
+</t>
+ <t>
+ There are existing implementations of RFC 4103 without the updates from this document. These will not be able to receive and present real-time text mixed for multi-party aware endpoints.
+ </t>
+      <t>
+	A negotiation mechanism is therefore needed for verification if the parties are able to handle a multi-party coded stream and agreeing on using that method.
 </t>
       <t>
-	A negotiation mechanism can therefore be based on selection of the "text/red" with media attribute "rtt-mixer" for verification that the parties are able to handle a multi-party coded stream and agreeing on using that method.
-</t>
-      <t>
-	A fall-back mixing procedure is needed for cases when the negotiation result indicates that a receiving endpoint is not capable to present the mixed format.
+	A fall-back mixing procedure is also needed for cases when the negotiation result indicates that a receiving endpoint is not capable of handling the mixed format. This method is called the mixing procedure for multi-party unaware endpoints. The fall-back method is naturally not expected to meet all performance requirements placed on the mixing procedure for multi-party aware endpoints. 
       </t>
 
 	    <t>
