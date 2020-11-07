@@ -294,7 +294,7 @@ When transmitted from a mixer during a multi-party session, a CSRC list SHALL be
     <section numbered="true" toc="default">
       <name>Initial transmission of a BOM character</name>
       <t>
-      As soon as a participant is known to participate in a session and being available for text reception, a Unicode BOM character SHALL be sent to it according to the procedures in this section. If the transmitter is a mixer, then the source of this character SHALL be indicated to be the mixer itself.
+      As soon as a participant is known to participate in a session with another entity and being available for text reception, a Unicode BOM character SHALL be sent to it by the other entity according to the procedures in this section. If the transmitter is a mixer, then the source of this character SHALL be indicated to be the mixer itself.
       	    </t>
             <t>
               Note that the BOM character SHALL be transmitted with the same redundancy procedures as any other text.
@@ -302,7 +302,7 @@ When transmitted from a mixer during a multi-party session, a CSRC list SHALL be
           </section>
           <section numbered="true" toc="default"><name>Keep-alive</name>
       	    <t>
-      After that, the transmitter SHALL send keep-alive traffic to the receivers at regular intervals when no other traffic has occurred during that interval if that is decided for the actual connection. Recommendations for keep-alive can be found in <xref target="RFC6263" format="default"/>.
+      After that, the transmitter SHALL send keep-alive traffic to the receiver(s) at regular intervals when no other traffic has occurred during that interval, if that is decided for the actual connection. Recommendations for keep-alive can be found in <xref target="RFC6263" format="default"/>.
       	    </t>
           </section>
           <section numbered="true" toc="default"><name>Transmission interval</name>
