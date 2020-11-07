@@ -496,20 +496,22 @@ Empty T140blocks are included as fillers for unused redundancy levels in the pac
 
    Offer example for "text/red" format including multi-party
    and security:
-         a=fingerprint: SHA-1 \
-         4A:AD:B9:B1:3F:82:18:3B:54:02:12:DF:3E:5D:49:6B:19:E5:7C:AB
+         a=fingerprint: (fingerprint1)
          m=text 11000 RTP/AVP 100 98
          a=rtpmap:98 t140/1000
          a=rtpmap:100 red/1000
          a=fmtp:100 98/98/98
          a=rtt-mixer
    ]]></artwork>
-   <t>The "Fingerprint" is sufficient to offer DTLS-SRTP, with the media line still indicating RTP/AVP.
+   <t>The "fingerprint" is sufficient to offer DTLS-SRTP, with the media line still indicating RTP/AVP.
+   </t>
+   <t>
+    Note: For brevity, the entire value of the SDP fingerprint attribute
+   is not shown in this and the following example.
    </t>
    <artwork name="" type="" align="left" alt=""><![CDATA[
     Answer example from a multi-party capable device with security
-         a=fingerprint: SHA-1 \
-         FF:FF:FF:B1:3F:82:18:3B:54:02:12:DF:3E:5D:49:6B:19:E5:7C:AB
+         a=fingerprint: (fingerprint2)
          m=text 16000 RTP/AVP 100 98
          a=rtpmap:98 t140/1000
          a=rtpmap:100 red/1000
