@@ -244,13 +244,23 @@ transmitted text to that participant to be suitable to present on a multi-party 
       <t>
 RFC 4103<xref target="RFC4103" format="default"/> specifies use of RFC 3550 RTP<xref target="RFC3550" format="default"/>, and a redundancy format "text/red" for increased robustness of real-time text transmission.
 This document updates RFC 4103<xref target="RFC4103" format="default"/>
-by introducing a capability negotiation for handling multi-party real-time text and a way to indicate the source of thansmitted text.
+by introducing a capability negotiation for handling multi-party real-time text, a way to indicate the source of transmitted text, and rules for efficient timing of the transmissions.
+</t>
+<t>
 The capability negotiation is based on use of the sdp media attribute "rtt-mixer".
+</t>
+<t>
+Both parties shall indicate their capability in a session setup or modification, and evaluate the capability of the counterpart.
 </t>
 <dl newline="true">
   <dt>The syntax is as follows:</dt>
   <dd>"a=rtt-mixer"</dd>
 </dl>
+</section>
+
+<section numbered="true" toc="default">
+  <name>Actions depending on capability negotiation result</name>
+
 <t>
   A transmitting party SHALL send text according to the multi-party format only when the negotiation for this method was successful and when the CC field in the RTP packet is set to 1. In all other cases, the packets SHALL be populated and interpreted as for a two-party session.
 </t>
