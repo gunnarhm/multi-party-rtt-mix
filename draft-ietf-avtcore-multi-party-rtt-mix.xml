@@ -127,7 +127,7 @@ source of each transmitted group of text from a conference participant so that t
    called the RTP translator model in <xref target="RFC3550" format="default"/>,
    would be efficient, and use exactly the same packet format as <xref target="RFC4103" format="default"/>,
    the same payload type and a simple SDP declaration.
-   However, the RTP implementation in both mixers and endpoints need to support multiple streams in the same RTP session in order to use this mechanism. There is currently a lack of support for
+   However, the RTP implementation in both mixers and endpoints need to support multiple streams in the same RTP session in order to use this mechanism. For best deployment opportunity, it should be possible to upgrade existing endpoint solutions to be multi-party aware with a reasonable effort. There is currently a lack of support for
    multi-stream RTP in certain implementation technologies. This fact made this solution not selected for inclusion in this document.
  </dd>
  <dt>
@@ -178,8 +178,14 @@ source of each transmitted group of text from a conference participant so that t
         "WebRTC" stands for web based communication specified by W3C and IETF.
       </t>
       <t>
-        "DTLS-SRTP" stnds for security specified in RFC 5764 <xref target="RFC5764" format="default"/>.
+        "DTLS-SRTP" stands for security specified in RFC 5764 <xref target="RFC5764" format="default"/>.
       </t>
+	  <t>
+	  "multi-party aware" stands for an endpoint receiving real-time text from multiple sources through a common conference mixer being able to present the text in real-time separated by source and presented so that a user can get an impression of the approximate relative timing of text from different parties. 
+	  </t>
+	  <t>
+	  "multi-party unaware" stands for an endpoint not itself being able to separate text from different sources when received through a common conference mixer. 
+	  </t>
 
     </section>
     <section numbered="true" toc="default">
