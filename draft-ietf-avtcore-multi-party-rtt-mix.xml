@@ -463,7 +463,7 @@ Empty T140blocks are included as fillers for unused redundancy levels in the pac
     <name>Security for session control and media</name>
   <t>
 
-  Security SHOULD be applied on both session control and media. In applications where legacy endpoints without security may exist, a negotiation between security and no security SHOULD be applied. If no other security solution is mandated by the application, then RFC 8643 OSRTP<xref target="RFC8643" format="default"/> SHOULD be applied to negotiate SRTP media security with DTLS. Most SDP examples below are for simplicity expressed without the security additions. The principles (but not all details) for applying DTLS-SRTP security is shown in a couple of the following examples.
+  Security SHOULD be applied on both session control and media. In applications where legacy endpoints without security may exist, a negotiation SHOULD be performed to decide if security by encryption will be applied. If no other security solution is mandated for the application, then RFC 8643 OSRTP<xref target="RFC8643" format="default"/> SHOULD be applied to negotiate SRTP media security with DTLS. Most SDP examples below are for simplicity expressed without the security additions. The principles (but not all details) for applying DTLS-SRTP security is shown in a couple of the following examples.
 
   </t>
   </section>
