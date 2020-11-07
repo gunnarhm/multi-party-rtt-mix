@@ -206,14 +206,17 @@ source of each transmitted group of text from a conference participant so that t
     </section>
 </section>
 <section numbered="true" toc="default">
-  <name>Specified solutions</name>
+  <name>Overview over the two specified solutions</name>
+  <t>
+  This section contains a brief introduction of the two methods specified in this document. 
+  </t>
   <section anchor="negouse" numbered="true" toc="default">
-    <name>Negotiated use of the RFC 4103 format for multi-party in a single RTP stream</name>
+    <name>Negotiated use of the RFC 4103 format for multi-party transmission in a single RTP stream</name>
     <t>
-The main purpose of this document is to specify the use of the current format for real-time text in <xref target="RFC4103" format="default"/> for true multi-party real-time text. It is an update of RFC 4103 by a clarification on one way to use it in the multi-party situation. It is done by completing a negotiation for this kind of multi-party capability and by indicating source in the CSRC element in the RTP packets.
+The main purpose of this document is to specify a method for true multi-party real-time text mixing for multi-party aware endpoints. The method use of the current format for real-time text in <xref target="RFC4103" format="default"/>. It is an update of RFC 4103 by a clarification on one way to use it in the multi-party situation. It is done by completing a negotiation for this kind of multi-party capability and by indicating source in the CSRC element in the RTP packets. Specific considerations are made to be able to recover text after packet loss. 
 </t>
 <t>
-The detailed procedures for the multi-party capable case are specified in <xref target="nego2" format="default"/>
+The detailed procedures for the multi-party aware case are specified in <xref target="nego2" format="default"/>
 </t>
 <t>
    Please use <xref target="RFC4103" format="default"/> as reference when reading the specification.
@@ -222,8 +225,7 @@ The detailed procedures for the multi-party capable case are specified in <xref 
   <section numbered="true" toc="default">
     <name>Mixing for multi-party unaware endpoints</name>
 <t>
-  A method is also specified in this document for cases when the endpoint participating in a multi-party call does not implement any solution
-   for multi-party presentation of real-time text. The solution requires the mixer to insert text dividers and readable
+  A method is also specified in this document for cases when the endpoint participating in a multi-party call does not itself implement any solution for multi-party handling of real-time text. The solution requires the mixer to insert text dividers and readable
     labels and only send text from one source at a time until a suitable point appears for source change.
     This solution is a fallback method with functional limitations that acts on the presentation level.
 </t>
