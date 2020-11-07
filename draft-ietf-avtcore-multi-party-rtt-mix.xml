@@ -1052,11 +1052,14 @@ IANA is asked to register the new sdp attribute "rtt-mixer".
       <name>Security Considerations</name>
       <t>
 
-The RTP-mixer model requires the mixer to be allowed to decrypt, pack and encrypt secured text from the conference participants. Therefore the mixer  needs to be trusted. This is similar to the situation for central mixers of audio and video.
+The RTP-mixer model requires the mixer to be allowed to decrypt, pack and encrypt secured text from the conference participants. Therefore the mixer needs to be trusted. This is similar to the situation for central mixers of audio and video.
 </t>
       <t>
 The requirement to transfer information about the user in RTCP reports in SDES, CNAME and NAME fields, and in conference notifications, for creation of labels may have privacy concerns as already stated in RFC 3550 <xref target="RFC3550" format="default"/>, and may be restricted of privacy reasons. The receiving user will then get a more symbolic label for the source.
       </t>
+	  <t>
+	  Participants with malicious intentions may appear and e.g. disturb the multi-party session by a continuous flow of text, or masquerading as text from other participants. Counteractions should be to require secure signaling, media and authentication, and to provide higher level conference functions e.g. for blocking and expelling participants. 
+	  </t>
     </section>
     <section numbered="true" toc="default">
       <name>Change history</name>
