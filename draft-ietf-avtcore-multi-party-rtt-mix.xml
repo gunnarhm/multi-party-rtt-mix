@@ -379,7 +379,8 @@ Note: The CSRC-list in an RTP packet only includes the participant who's text is
       </section>
       <section numbered="true" toc="default"><name>Other RTP header fields</name>
             <t>
-      The number of members in the CSRC list ( 0 or 1) shall be placed in the "CC" header field. Only mixers place value 1 in the "CC" field.
+      The number of members in the CSRC list ( 0 or 1) shall be placed in the "CC" header field. Only mixers place value 1 in the "CC" field. A value of "0" indicates that the source is the transmitting device itself and that the source is indicated by the SSRC field. This value is used by endpoints, and by mixers sending data that it is source of itself.
+	  
       </t>
       <t>
                 The current time SHALL be inserted in the timestamp.
