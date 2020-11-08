@@ -307,11 +307,11 @@ When transmitted from a mixer during a multi-party session, a CSRC list SHALL be
           </section>
           <section numbered="true" toc="default"><name>Transmission interval</name>
             <t>
-      A "text/red" transmitter in a mixer SHOULD send packets distributed in time as long as there is something (new or  redundant T140blocks) to transmit.  The maximum transmission interval SHOULD then be 300 ms. It is RECOMMENDED to send next packet to a receiver as soon as new text to that receiver is available, as long as the time after the latest sent packet to the same receiver is more than or equal to 100 ms, and also the maximum character rate to the receiver is not exceeded. The intention is to keep the latency low while keeping a good protection against text loss in bursty packet loss conditions.
+      A "text/red" transmitter in a mixer SHOULD send packets distributed in time as long as there is something (new or redundant T140blocks) to transmit.  The maximum transmission interval SHOULD then be 330 ms. It is RECOMMENDED to send next packet to a receiver as soon as new text to that receiver is available, as long as the time after the latest sent packet to the same receiver is more than or equal to 100 ms, and also the maximum character rate to the receiver is not exceeded. The intention is to keep the latency low and network load limited while keeping a good protection against text loss in bursty packet loss conditions.
     </t>
   </section>
   <section numbered="true" toc="default"><name>Only one source per packet</name>
-    <t> New and redundant text from one source MAY be transmitted in the same packet. Text from different sources MUST NOT be transmitted in the same packet.
+    <t> New and redundant text from one source SHALL be transmitted in the same packet if available for transmission at the same time. Text from different sources MUST NOT be transmitted in the same packet.
       	    </t>
           </section>
           <section numbered="true" toc="default"><name>Do not send received text to the originating source</name>
@@ -321,34 +321,45 @@ When transmitted from a mixer during a multi-party session, a CSRC list SHALL be
           </section>
             <section numbered="true" toc="default"><name>Clean incoming text</name>
             <t>
-              A mixer SHALL handle reception, recovery of packet loss, marking of possible text loss and deletion of 'BOM' characters from each participant before queueing received text for transmission to receiving participants.
+              A mixer SHALL handle reception, recovery of packet loss, deletion of superfluous redundancy, marking of possible text loss and deletion of 'BOM' characters from each participant before queueing received text for transmission to receiving participants.
             </t>
           </section>
           <section numbered="true" toc="default"><name>Redundancy</name>
       	    <t>
-      A transmitting party using redundancy SHALL send redundant repetitions of T140blocks aleady transmitted in earlier packets.
+      A transmitting party using redundancy SHALL send redundant repetitions of T140blocks already transmitted in earlier packets.
     </t>
-    <t> The number of redundant generations of T140blocks to include in transmitted packets SHALL be deduced from the SDP negotiation. It SHOULD be set to the minimum of the number declared by the two parties negotiating a connection.
+    <t> The number of redundant generations of T140blocks to include in transmitted packets SHALL be deduced from the SDP negotiation. It SHOULD be set to the minimum of the number declared by the two parties negotiating a connection. It is RECOMMENDED to transmit one original and two redundant generations of the T140blocks.
       	    </t>
           </section>
-          <section numbered="true" toc="default"><name>Text placement in packets</name>
+		   <section numbered="true" toc="default"><name>Source switching</name>
       	    <t>
-      	      At time of transmission, the mixer SHALL populate the RTP packet with all T140blocks queued for transmission originating from the source in turn for transmission as long as this is not in conflict with the allowed number of characters per second ("CPS") or the maximum packet size. The SSRC of the source shall be placed as the only member in the CSRC-list.
+      		    When text from more than one source is available for transmission from a mixer, the mixer SHALL let the sources take turns in having their text transmitted. 
+            </t>
+			
+            <t>
+The source with the oldest received text in the mixer SHOULD be next in turn to get all its available unsent text transmitted.
+      	    </t>
+
+
+          </section>
+          <section numbered="true" toc="default"><name>Text placement in packets</name>
+		  <t>
+		  The mixer SHOULD compose and transmit an RTP packet to a receiver when one of the following conditions has occurred:
+			100 ms has passed since the latest transmission to that receiver, and there is unsent text available for transmission.
+			New text has arrived and it is more than 100 ms since latest transmission to that receiver.
+			330 ms has passed since already transmitted text was queued for transmission as redundant text, and it is more than 100 ms since the latest transmission to that receiver, and the redundant text is still not sent.
+		  </t>
+      	    <t>
+      	      At time of transmission, the mixer SHALL populate the RTP packet with all T140blocks queued for transmission originating from the source in turn for transmission as long as this is not in conflict with the allowed number of characters per second ("CPS") or the maximum packet size. In this way, the latency of the latest received text is kept low even in moments of simultaneous transmission from many sources.
       </t>
+	  <t>
+	  The SSRC of the source shall be placed as the only member in the CSRC-list.
+	  </t>
       <t>
 Note: The CSRC-list in an RTP packet only includes the participant who's text is included in text blocks. It is not the same as the total list of participants in a conference. With audio and video media, the CSRC-list would often contain all participants who are not muted whereas text participants that don't type are completely silent and thus are not represented in RTP packet CSRC-lists.
       </t>
       </section>
-      <section numbered="true" toc="default"><name>Source switching</name>
-      	    <t>
-      		    When text from more than one source is available for transmission, the mixer SHALL let the sources take turns in having their text transmitted. When switching from transmission of one source to allow another source to get turn to have its text sent, all intended redundant generations of the last text from the current source MUST be transmitted before text from another source is transmitted.
-            </t>
-            <t>
-               Actively transmitting sources SHOULD be allowed to take turns as frequently as possible to have their text transmitted. That implies that with the recommended redundancy, the mixer SHALL send primary text and two packets with redundant text from the current source before text from another source is transmitted. The source with the oldest text received in the mixer SHOULD be next in turn to get all its available text transmitted.
-      	    </t>
-
-
-          </section>
+     
           <section numbered="true" toc="default"><name>Empty T140blocks</name>
             <t>
       If no unsent T140blocks were available for a source at the time of populating a packet, but T140blocks are available which have not yet been sent the full intended number of redundant transmissions, then the primary T140block for that source is composed of an empty T140block, and populated (without taking up any length) in a packet for transmission. The corresponding SSRC SHALL be placed as usual in its place in the CSRC-list.
@@ -360,15 +371,19 @@ Note: The CSRC-list in an RTP packet only includes the participant who's text is
       </section>
       <section numbered="true" toc="default"><name>Creation of the redundancy</name>
             <t>
-      The primary T140block from a source in the latest transmitted packet is used to populate the first redundant T140block for that source. The first redundant T140block for that source from the latest transmission is placed as the second redundant T140block.
+      The primary T140block from a source in the latest transmitted packet is saved for populating the first redundant T140block for that source in next transmission of text from that source. The first redundant T140block for that source from the latest transmission is saved for populating the second redundant T140block in next transmission of text from that source.
       </t>
+	 
             <t>
       Usually this is the level of redundancy used. If a higher number of redundancy is negotiated, then the procedure SHALL be maintained until all available redundant levels of T140blocks are placed in the packet. If a receiver has negotiated a lower number of "text/red" generations, then that level shall be the maximum used by the transmitter.
       </t>
+	   <t>
+	  The T140blocks saved for transmission as redundant data are assigned a planned transmission time 330 ms after the current time. 
+	  </t>
       </section>
       <section numbered="true" toc="default"><name>Timer offset fields</name>
             <t>
-      The timestamp offset values are inserted in the redundancy header, with the time offset from the RTP timestamp in the packet when the corresponding T140block was sent from its original source as primary.
+      The timestamp offset values are inserted in the redundancy header, with the time offset from the RTP timestamp in the packet when the corresponding T140block was sent as primary.
       </t>
       <t>
         The timestamp offsets are expressed in the same clock tick units as the RTP timestamp.
