@@ -439,6 +439,11 @@ If the "CC" field value of a received packet is 1, it indicates that multi-party
 The used level of redundancy generations SHALL be evaluated from the received packet contents. The number of generations (including the primary) is equal to the number of members in the redundancy header.
 </t>
 </section>
+<section numbered="true" toc="default"><name>Empty T140blocks</name>
+      <t>
+Empty T140blocks are included as fillers for unused primary or redundancy levels in the packets. They just do not provide any contents and do not contribute to the received streams.
+      </t>
+    </section>
 <section numbered="true" toc="default"><name>Detection and indication of possible text loss</name>
 
       <t>
@@ -446,10 +451,13 @@ The RTP sequence numbers of the received packets SHALL be monitored for gaps and
 If a sequence number gap appears and still exists after some defined short time for jitter resolution, the packets in the gap SHALL be regarded lost.
 </t>
 <t>
-If it is known that only one source is active in the RTP session, then it is likely that a gap of one packet more than the agreed redundancy level causes text loss. In that case a t140block SHALL be created with a marker for possible text loss <xref target="T140ad1" format="default"/> and assigned to the source and inserted in the reception buffer for that source.
+If it is known that only one source is active in the RTP session, then it is likely that a gap equal to or larger than the agreed number of redundancy generations causes text loss. In that case a t140block SHALL be created with a marker for possible text loss <xref target="T140ad1" format="default"/> and assigned to the source and inserted in the reception buffer for that source.
 </t>
 <t>
-If it is known that more than one source is active in the RTP session, then it is not possible in general to evaluate if text was lost when packets were lost. With two active sources and the recommended level of redundancy, it can take a gap of five lost packets until any text may be lost, but text loss can also appear if three non-consecutive packets are lost when they contained consecutive data from the same source. A simple method to decide when there is risk for resulting text loss is to evaluate if three or more packets were lost within one second. Then a t140block SHALL be created with a marker for possible text loss <xref target="T140ad1" format="default"/> and assigned to the SSRC of the transmitter as a general input from the mixer.  
+If it is known that more than one source is active in the RTP session, then it is not possible in general to evaluate if text was lost when packets were lost. With two active sources and the recommended number of redundancy generations (3), it can take a gap of five lost packets until any text may be lost, but text loss can also appear if three non-consecutive packets are lost when they contained consecutive data from the same source. A simple method to decide when there is risk for resulting text loss is to evaluate if three or more packets were lost within one second. Then a t140block SHALL be created with a marker for possible text loss <xref target="T140ad1" format="default"/> and assigned to the SSRC of the transmitter as a general input from the mixer.  
+</t>
+<t>
+Implementations MAY apply more refined methods for more reliable detection of if text was lost or not. Any refined method SHOULD rather falsely mark possible loss when there was no loss instead of not marking possible loss when there was loss. 
 </t>
 </section>
 <section numbered="true" toc="default"><name>Extracting text and handling recovery</name>
@@ -479,14 +487,10 @@ If the packet is not the first packet from a source, then if the second generati
 </section>
 <section numbered="true" toc="default"><name>Delete 'BOM'</name>
       <t>
-Unicode character 'BOM' is used as a start indication and sometimes used as a filler or keep alive by transmission implementations. These SHALL be deleted on reception.
+Unicode character 'BOM' is used as a start indication and sometimes used as a filler or keep alive by transmission implementations. These SHALL be deleted after extraction from received packets.
 </t>
 </section>
-<section numbered="true" toc="default"><name>Empty T140blocks</name>
-      <t>
-Empty T140blocks are included as fillers for unused redundancy levels in the packets. They just do not provide any contents and do not contribute to the received streams.
-      </t>
-    </section>
+
   </section>
   <section numbered="true" toc="default">
     <name>Performance considerations</name>
