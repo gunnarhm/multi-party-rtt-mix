@@ -593,31 +593,32 @@ Unicode character 'BOM' is used as a start indication and sometimes used as a fi
   |----------------|
   ]]></artwork>
         <t>
-  Assuming that earlier packets ( with text A1 and A2) were received in sequence, text A3 is received from packet 101 and assigned to reception area A. The mixer is now assumed to have received text from source B and need to prepare for sending that text. First it must send the redundant generations of text A2 and A3.
+  Assuming that earlier packets ( with text A1 and A2) were received in sequence, text A3 is received from packet 101 and assigned to reception area A. The mixer is now assumed to have received text from source B and will send that text 100 ms after packet 101. Transmission of A2 and A3 as redundancy is planned for 200 ms after packet 101.
   </t>
         <artwork name="" type="" align="left" alt=""><![CDATA[
   |----------------|
   |Seq no 102      |
   |CC=1            |
-  |CSRC list A     |
-  |R2  A2          |
-  |R1: A3          |
-  |P: Empty        |
+  |CSRC list B     |
+  |R2  Empty       |
+  |R1: Empty       |
+  |P:  B1          |
   |----------------|
-  Nothing needs to be retrieved from this packet. But the receiver
-  needs to remember temporarily that it was received.
+  B1 is retrieved from this packet. Redundant transmission of
+  B1 is planned 200 ms after packet 102.
   ]]></artwork>
         <artwork name="" type="" align="left" alt=""><![CDATA[
   X----------------|
   X Seq no 103     |
   X CC=1           |
   X CSRC list A    |
-  X R2: A3         |
-  X R1: Empty      |
+  X R2: A2         |
+  X R1: A3         |
   X P:  Empty      |
   X----------------|
-  Packet 103 is assumed to be dropped in network problems. It was the
-  last packet with contents from A before the source switch.
+  Packet 103 is assumed to be dropped in network problems. It
+  contains redundancy for A. Sending A3 as second level 
+  redundancy is planned for 100 ms after packet 104.
   ]]></artwork>
         <artwork name="" type="" align="left" alt=""><![CDATA[
   X----------------|
@@ -625,24 +626,25 @@ Unicode character 'BOM' is used as a start indication and sometimes used as a fi
   X CC=1           |
   X CSRC list B    |
   X R2: Empty      |
-  X R1: Empty      |
-  X P2: B1         |
+  X R1: B1         |
+  X P2: B2         |
   X----------------|
   Packet 104 contains text from B, assumed dropped in network
-  problems. The mixer is assumed to have received text from A
-  on turn to send. Sending of text from B must therefore be
-  temporarily ended by sending redundancy twice.
+  problems. The mixer has A3 redundancy to send and plans it
+  after 100 ms.
   ]]></artwork>
         <artwork name="" type="" align="left" alt=""><![CDATA[
   X----------------|
   X Seq no 105     |
   X CC=1           |
-  X CSRC list B    |
-  X R2: Empty      |
-  X R1: B1         |
+  X CSRC list A    |
+  X R2: A3         |
+  X R1: Empty      |
   X P:  Empty      |
   X----------------|
   Packet 105 is assumed to be dropped in network problems
+  B1 and B2 still needs to be transmitted as redundancy.
+  This is planned 320 ms after packet 105.
   ]]></artwork>
         <artwork name="" type="" align="left" alt=""><![CDATA[
   |----------------|
@@ -650,32 +652,24 @@ Unicode character 'BOM' is used as a start indication and sometimes used as a fi
   |CC=1            |
   |CSRC list B     |
   | R2: B1         |
-  | R1: Empty      |
+  | R1: B2         |
   | P:  Empty      |
   |----------------|
   ]]></artwork>
   <t>
-  Packet 106 is received. The latest received sequence number was 102.
-  Recovery is therefore tried for 103,104,105. There is no coverage
-  for seq no 103. But knowing that A3 was received as R1 in packet 102,
-  it can be concluded that packet 103 just contained A3 as R2 and A3
-  was already received and nothing was lost in packet 103.
+  Packet 106 is received 320 ms after packet 105. The latest received sequence number was 102.
+  103,104,105 were lost. Three packets were thus lost during less than one second. The simple rule for detection of text loss then results in that an indicator for possible loss  (U'FFFD) <xref target="T140ad1" format="default"/>, should be inserted generally for the mixer.
   </t>
   <t>
-  For seqno 104, text B1 is recovered from the second generation redundancy in packet 106 and appended to
-  the reception area of B.
-  For seqno 105, nothing needs to be recovered.
-  No primary text is available in packet 106.
+The second level redundancy in packet 106 is B1 and has timestamp offset 620 ms.
+The timestamp of packet 106 minus 620 is the timestamp of packet 101 which was received. So B1 does not need to be retrieved.
+The first level redundancy in packet 106 is 420. The timestamp of packet 106 minus 420 is later than the latest received packet with source A. Therefore B2 is retrieved and assigned to the input buffer for source B.   
+No primary is available in packet 106
   </t>
   <t>
-    After this sequence, A3 and B1 have been received. In this case no text was lost. Even if also packet 102 was lost, it can be concluded that no text was lost.
+    After this sequence, A3 and B1 and B2 have been received. In this case no text was lost.
   </t>
-        <t>
-  If also packets 101 and 102 were lost, there would be a need to create a marker for possibly lost text  (U'FFFD) <xref target="T140ad1" format="default"/>, inserted generally and possibly also in text sequences A and B.
-  </t>
-  <t>
-    The general conclusion is that if CSRC is equal before and after a gap, only a gap of two can be recovered. If CSRC is different before and after the gap, a gap of 4 can be recovered if the last packet before the gap contained only R2 data, a gap of 3 can be recovered if the last packet before the gap contained R1 data and a gap of 2 can be recovered if the last packet received before the gap contained primary data. For larger gaps than the above, a mark for possible loss needs to be inserted in the received stream from the mixer.
-  </t>
+
     </section>
 
 <section numbered="true" toc="default">
@@ -1108,6 +1102,7 @@ The requirement to transfer information about the user in RTCP reports in SDES, 
 	  <section numbered="true" toc="default">
           <name>Changes included in draft-ietf-avtcore-multi-party-rtt-mix-10</name>
           <t>
+		  
 		  </t>
 		  </section>
       <section numbered="true" toc="default">
