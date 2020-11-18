@@ -439,21 +439,42 @@ If the "CC" field value of a received packet is 1, it indicates that multi-party
 The used level of redundancy generations SHALL be evaluated from the received packet contents. The number of generations (including the primary) is equal to the number of members in the redundancy header.
 </t>
 </section>
-<section numbered="true" toc="default"><name>Extracting text and handling recovery and loss</name>
+<section numbered="true" toc="default"><name>Detection and indication of possible text loss</name>
+
       <t>
 The RTP sequence numbers of the received packets SHALL be monitored for gaps and packets out of order.
+If a sequence number gap appears and still exists after some defined short time for jitter resolution, the packets in the gap SHALL be regarded lost.
 </t>
-      <t>
-As long as the sequence is correct, each packet SHALL be unpacked in order. The T140blocks SHALL be extracted from the primary area, and the corresponding SSRC SHALL be extracted from the CSRC list and used for assigning the new T140block to the correct presentation area (or correspondingly for other receiver roles).
+<t>
+If it is known that only one source is active in the RTP session, then it is likely that a gap of one packet more than the agreed redundancy level causes text loss. In that case a t140block SHALL be created with a marker for possible text loss <xref target="T140ad1" format="default"/> and assigned to the source and inserted in the reception buffer for that source.
 </t>
-      <t>
-If a sequence number gap appears and is still there after some defined time for jitter resolution, T140data SHALL be recovered from redundant data. If the gap is wider than the number of generations of redundant T140blocks in the packet and it is concluded that t140blocks MAY have been lost, then a t140block SHALL be created with a marker for possible text loss <xref target="T140ad1" format="default"/> and assigned to the SSRC of the transmitter as a general input from the mixer because in general it is not possible to deduce from which source(s) text was lost. It is in some cases possible to deduce that no text was lost even for a gap wider than the redundancy generations, and in some cases it can be concluded which source that likely had loss. Therefore, the receiver MAY insert the marker for possible text loss <xref target="T140ad1" format="default"/> in the presentation area corresponding to the source which may have had loss. See <xref target="pseq" format="default"/>
+<t>
+If it is known that more than one source is active in the RTP session, then it is not possible in general to evaluate if text was lost when packets were lost. With two active sources and the recommended level of redundancy, it can take a gap of five lost packets until any text may be lost, but text loss can also appear if three non-consecutive packets are lost when they contained consecutive data from the same source. A simple method to decide when there is risk for resulting text loss is to evaluate if three or more packets were lost within one second. Then a t140block SHALL be created with a marker for possible text loss <xref target="T140ad1" format="default"/> and assigned to the SSRC of the transmitter as a general input from the mixer.  
 </t>
-      <t>
-Then, the T140block in the received packet SHALL be retrieved beginning with the highest redundant generation, and assigning it to the presentation area of that source. Finally the primary T140block SHALL be retrieved from the packet and similarly assigned to the corresponding presentation area for the source.
+</section>
+<section numbered="true" toc="default"><name>Extracting text and handling recovery</name>
+<t>
+When applying the following procedures, the effects MUST be considered of possible timestamp wrap around and the RTP session possibly changing SSRC.  
 </t>
-      <t>
-If the sequence number gap was equal to or less than the number of redundancy generations in the received packet, a missing text marker SHALL NOT be inserted, and instead the T140block and the SSRC fully recovered from the redundancy and primary information and the CSRC-list in the way indicated above.
+<t>
+When a packet is received in an RTP session using the packetization for multi-party aware endpoints, its T140blocks SHALL be extracted in the following way. The description is adapted to the default redundancy case using the original and two redundant generations. 
+</t>
+<t>
+When applying the following procedures, the effects MUST be considered of possible timestamp wrap around and the RTP session possibly changing SSRC.  
+</t>
+
+<t>
+The source SHALL be extracted from the CSRC-list if available, otherwise from the SSRC. 
+</t>
+
+<t>
+If the received packet is the first packet received from the source, then all T140blocks in the packet SHALL be retrieved and assigned to a receive buffer for the source beginning with the second generation redundancy, continuing with the first generation redundancy and finally the primary.  
+</t>
+<t>
+Note that the normal case is that in the first packet, only the primary data has contents. The redundant data has contents in the first received packet from a source only after initial packet loss.
+</t>
+<t>
+If the packet is not the first packet from a source, then if the second generation redundant data is available, its timestamp SHALL be created by subtracting its timestamp offset from the RTP timestamp. If the resulting timestamp is later than the latest retrieved data from the same source, then the redundant data SHALL be retrieved and appended to the receive buffer. The process SHALL be continued in the same way for the first generation redundant data. After that, the primary data SHALL be retrieved from the packet and appended to the receive buffer for the source.     
 </t>
 </section>
 <section numbered="true" toc="default"><name>Delete 'BOM'</name>
