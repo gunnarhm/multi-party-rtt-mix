@@ -1102,7 +1102,17 @@ The requirement to transfer information about the user in RTCP reports in SDES, 
 	  <section numbered="true" toc="default">
           <name>Changes included in draft-ietf-avtcore-multi-party-rtt-mix-10</name>
           <t>
+		  The packet composition was modified for interleaving packets from different sources.
+		  </t>
+		  <t>
+		  The packet reception was modified for the new interleaving method.
+</t>
+		  <t>
 		  
+		  The packet sequence examples was adjusted for the new interleaving method.
+</t>
+		  <t>
+		  Modifications according to responses to Brian Rosen of 2020-11-03
 		  </t>
 		  </section>
       <section numbered="true" toc="default">
