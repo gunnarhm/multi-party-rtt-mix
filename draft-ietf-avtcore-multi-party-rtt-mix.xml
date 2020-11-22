@@ -25,11 +25,11 @@
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of popular PIs -->
-<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" consensus="true" docName="draft-ietf-avtcore-multi-party-rtt-mix-10" ipr="trust200902" updates="RFC 4103" obsoletes="" submissionType="IETF" xml:lang="en" tocInclude="true" tocDepth="2" symRefs="true" sortRefs="true" version="3">
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" consensus="true" docName="draft-ietf-avtcore-multi-party-rtt-mix-11" ipr="trust200902" updates="RFC 4103" obsoletes="" submissionType="IETF" xml:lang="en" tocInclude="true" tocDepth="2" symRefs="true" sortRefs="true" version="3">
   <!-- xml2rfc v2v3 conversion 2.42.0 -->
   <front>
     <title abbrev="RTP-mixer format for multi-party RTT">RTP-mixer formatting of multi-party Real-time text</title>
-    <seriesInfo name="Internet-Draft" value="draft-ietf-avtcore-multi-party-rtt-mix-10"/>
+    <seriesInfo name="Internet-Draft" value="draft-ietf-avtcore-multi-party-rtt-mix-11"/>
     <author fullname="Gunnar Hellstrom" initials="G" surname="Hellstrom">
       <organization>Gunnar Hellstrom Accessible Communication</organization>
       <address>
@@ -213,7 +213,7 @@ source of each transmitted group of text from a conference participant so that t
   <section anchor="negouse" numbered="true" toc="default">
     <name>Negotiated use of the RFC 4103 format for multi-party transmission in a single RTP stream</name>
     <t>
-The main purpose of this document is to specify a method for true multi-party real-time text mixing for multi-party aware endpoints. The method use of the current format for real-time text in <xref target="RFC4103" format="default"/>. It is an update of RFC 4103 by a clarification on one way to use it in the multi-party situation. It is done by completing a negotiation for this kind of multi-party capability and by indicating source in the CSRC element in the RTP packets. Specific considerations are made to be able to recover text after packet loss. 
+The main purpose of this document is to specify a method for true multi-party real-time text mixing for multi-party aware endpoints. The method makes use of the current format for real-time text in <xref target="RFC4103" format="default"/>. It is an update of RFC 4103 by a clarification on one way to use it in the multi-party situation. It is done by completing a negotiation for this kind of multi-party capability and by indicating source in the CSRC element in the RTP packets. Specific considerations are made to be able to recover text after packet loss. 
 </t>
 <t>
 The detailed procedures for the multi-party aware case are specified in <xref target="nego2" format="default"/>
@@ -227,7 +227,7 @@ The detailed procedures for the multi-party aware case are specified in <xref ta
 <t>
   A method is also specified in this document for cases when the endpoint participating in a multi-party call does not itself implement any solution for multi-party handling of real-time text. The solution requires the mixer to insert text dividers and readable
     labels and only send text from one source at a time until a suitable point appears for source change.
-    This solution is a fallback method with functional limitations that acts on the presentation level.
+    This solution is a fallback method with functional limitations. It acts on the presentation level.
 </t>
 <t>
 A party performing as a mixer, which has not negotiated the "rtt-mixer" sdp media attribute, but negotiated a "text/red"
@@ -244,7 +244,7 @@ transmitted text to that participant to be suitable to present on a multi-party 
       <t>
 RFC 4103<xref target="RFC4103" format="default"/> specifies use of RFC 3550 RTP<xref target="RFC3550" format="default"/>, and a redundancy format "text/red" for increased robustness of real-time text transmission.
 This document updates RFC 4103<xref target="RFC4103" format="default"/>
-by introducing a capability negotiation for handling multi-party real-time text, a way to indicate the source of transmitted text, and rules for efficient timing of the transmissions.
+by introducing a capability negotiation for handling multi-party real-time text, a way to indicate the source of transmitted text, and rules for efficient timing of the transmissions interleaved from different sources. 
 </t>
 <t>
 The capability negotiation is based on use of the sdp media attribute "rtt-mixer".
@@ -307,8 +307,11 @@ When transmitted from a mixer during a multi-party session, a CSRC list SHALL be
           </section>
           <section numbered="true" toc="default"><name>Transmission interval</name>
             <t>
-      A "text/red" transmitter in a mixer SHOULD send packets distributed in time as long as there is something (new or redundant T140blocks) to transmit.  The maximum transmission interval SHOULD then be 330 ms. It is RECOMMENDED to send next packet to a receiver as soon as new text to that receiver is available, as long as the time after the latest sent packet to the same receiver is more than or equal to 100 ms, and also the maximum character rate to the receiver is not exceeded. The intention is to keep the latency low and network load limited while keeping a good protection against text loss in bursty packet loss conditions.
+      A "text/red" or "text/t140" transmitter in a mixer SHOULD send packets distributed in time as long as there is something (new or redundant T140blocks) to transmit.  The maximum transmission interval SHOULD then be 330 ms. It is RECOMMENDED to send next packet to a receiver as soon as new text to that receiver is available, as long as the time after the latest sent packet to the same receiver is more than or equal to 100 ms, and also the maximum character rate ("CPS") to the receiver is not exceeded. The intention is to keep the latency low and network load limited while keeping a good protection against text loss in bursty packet loss conditions.
     </t>
+	<t>
+	For a transmitter not acting in a mixer, the same transmission interval principles apply, but the maximum transmission interval SHOULD be 300 ms.
+	</t>
   </section>
   <section numbered="true" toc="default"><name>Only one source per packet</name>
     <t> New and redundant text from one source SHALL be transmitted in the same packet if available for transmission at the same time. Text from different sources MUST NOT be transmitted in the same packet.
@@ -321,23 +324,23 @@ When transmitted from a mixer during a multi-party session, a CSRC list SHALL be
           </section>
             <section numbered="true" toc="default"><name>Clean incoming text</name>
             <t>
-              A mixer SHALL handle reception, recovery of packet loss, deletion of superfluous redundancy, marking of possible text loss and deletion of 'BOM' characters from each participant before queueing received text for transmission to receiving participants.
+              A mixer SHALL handle reception, recovery from packet loss, deletion of superfluous redundancy, marking of possible text loss and deletion of 'BOM' characters from each participant before queueing received text for transmission to receiving participants.
             </t>
           </section>
-          <section numbered="true" toc="default"><name>Redundancy</name>
+          <section numbered="true" toc="default"><name>Redundant transmission principles</name>
       	    <t>
       A transmitting party using redundancy SHALL send redundant repetitions of T140blocks already transmitted in earlier packets.
     </t>
-    <t> The number of redundant generations of T140blocks to include in transmitted packets SHALL be deduced from the SDP negotiation. It SHOULD be set to the minimum of the number declared by the two parties negotiating a connection. It is RECOMMENDED to transmit one original and two redundant generations of the T140blocks.
+    <t> The number of redundant generations of T140blocks to include in transmitted packets SHALL be deduced from the SDP negotiation. It SHOULD be set to the minimum of the number declared by the two parties negotiating a connection. It is RECOMMENDED to declare and transmit one original and two redundant generations of the T140blocks.
       	    </t>
           </section>
-		   <section numbered="true" toc="default"><name>Source switching</name>
+		   <section numbered="true" toc="default"><name>Interleaving text from different sources</name>
       	    <t>
       		    When text from more than one source is available for transmission from a mixer, the mixer SHALL let the sources take turns in having their text transmitted. 
             </t>
 			
             <t>
-The source with the oldest received text in the mixer SHOULD be next in turn to get all its available unsent text transmitted.
+The source with the oldest text received in the mixer or oldest redundant text SHOULD be next in turn to get all its available unsent text transmitted. The age of redundant text SHOULD then be considered to be 330 ms after its previous transmission.
       	    </t>
 
 
@@ -355,6 +358,9 @@ The source with the oldest received text in the mixer SHOULD be next in turn to 
       	      At time of transmission, the mixer SHALL populate the RTP packet with all T140blocks queued for transmission originating from the source in turn for transmission as long as this is not in conflict with the allowed number of characters per second ("CPS") or the maximum packet size. In this way, the latency of the latest received text is kept low even in moments of simultaneous transmission from many sources.
       </t>
 	  <t>
+	  Redundant text SHALL also be included. See <xref target="redundancy" format="default"/>
+	  </t>
+	  <t>
 	  The SSRC of the source shall be placed as the only member in the CSRC-list.
 	  </t>
       <t>
@@ -371,7 +377,7 @@ Note: The CSRC-list in an RTP packet only includes the participant who's text is
         available T140blocks for the source in turn to be sent as primary, and empty T140blocks for the agreed number of redundancy generations.
       </t>
       </section>
-      <section numbered="true" toc="default"><name>Creation of the redundancy</name>
+      <section anchor="redundancy" numbered="true" toc="default"><name>Creation of the redundancy</name>
             <t>
       The primary T140block from a source in the latest transmitted packet is saved for populating the first redundant T140block for that source in next transmission of text from that source. The first redundant T140block for that source from the latest transmission is saved for populating the second redundant T140block in next transmission of text from that source.
       </t>
@@ -380,7 +386,7 @@ Note: The CSRC-list in an RTP packet only includes the participant who's text is
       Usually this is the level of redundancy used. If a higher number of redundancy is negotiated, then the procedure SHALL be maintained until all available redundant levels of T140blocks are placed in the packet. If a receiver has negotiated a lower number of "text/red" generations, then that level shall be the maximum used by the transmitter.
       </t>
 	   <t>
-	  The T140blocks saved for transmission as redundant data are assigned a planned transmission time 330 ms after the current time. 
+	  The T140blocks saved for transmission as redundant data are assigned a planned transmission time 330 ms after the current time, but SHOULD be transmitted earlier if new text for the same source gets in turn for transmission before that time.  
 	  </t>
       </section>
       <section numbered="true" toc="default"><name>Timer offset fields</name>
@@ -443,7 +449,7 @@ The used level of redundancy generations SHALL be evaluated from the received pa
 </section>
 <section numbered="true" toc="default"><name>Empty T140blocks</name>
       <t>
-Empty T140blocks are included as fillers for unused primary or redundancy levels in the packets. They just do not provide any contents and do not contribute to the received streams.
+Empty T140blocks are included as fillers for unused primary or redundancy levels in the packets. They just do not provide any contents.
       </t>
     </section>
 <section numbered="true" toc="default"><name>Detection and indication of possible text loss</name>
@@ -453,10 +459,10 @@ The RTP sequence numbers of the received packets SHALL be monitored for gaps and
 If a sequence number gap appears and still exists after some defined short time for jitter resolution, the packets in the gap SHALL be regarded lost.
 </t>
 <t>
-If it is known that only one source is active in the RTP session, then it is likely that a gap equal to or larger than the agreed number of redundancy generations causes text loss. In that case a t140block SHALL be created with a marker for possible text loss <xref target="T140ad1" format="default"/> and assigned to the source and inserted in the reception buffer for that source.
+If it is known that only one source is active in the RTP session, then it is likely that a gap equal to or larger than the agreed number of redundancy generations (including the primary) causes text loss. In that case a t140block SHALL be created with a marker for possible text loss <xref target="T140ad1" format="default"/> and assigned to the source and inserted in the reception buffer for that source.
 </t>
 <t>
-If it is known that more than one source is active in the RTP session, then it is not possible in general to evaluate if text was lost when packets were lost. With two active sources and the recommended number of redundancy generations (3), it can take a gap of five lost packets until any text may be lost, but text loss can also appear if three non-consecutive packets are lost when they contained consecutive data from the same source. A simple method to decide when there is risk for resulting text loss is to evaluate if three or more packets were lost within one second. Then a t140block SHALL be created with a marker for possible text loss <xref target="T140ad1" format="default"/> and assigned to the SSRC of the transmitter as a general input from the mixer.  
+If it is known that more than one source is active in the RTP session, then it is not possible in general to evaluate if text was lost when packets were lost. With two active sources and the recommended number of redundancy generations (3), it can take a gap of five consecutive lost packets until any text may be lost, but text loss can also appear if three non-consecutive packets are lost when they contained consecutive data from the same source. A simple method to decide when there is risk for resulting text loss is to evaluate if three or more packets were lost within one second. Then a t140block SHALL be created with a marker for possible text loss <xref target="T140ad1" format="default"/> and assigned to the SSRC of the transmitter as a general input from the mixer.  
 </t>
 <t>
 Implementations MAY apply more refined methods for more reliable detection of if text was lost or not. Any refined method SHOULD rather falsely mark possible loss when there was no loss instead of not marking possible loss when there was loss. 
@@ -470,7 +476,6 @@ When applying the following procedures, the effects MUST be considered of possib
 When a packet is received in an RTP session using the packetization for multi-party aware endpoints, its T140blocks SHALL be extracted in the following way. The description is adapted to the default redundancy case using the original and two redundant generations. 
 </t>
 <t>
-When applying the following procedures, the effects MUST be considered of possible timestamp wrap around and the RTP session possibly changing SSRC.  
 </t>
 
 <t>
@@ -481,7 +486,7 @@ The source SHALL be extracted from the CSRC-list if available, otherwise from th
 If the received packet is the first packet received from the source, then all T140blocks in the packet SHALL be retrieved and assigned to a receive buffer for the source beginning with the second generation redundancy, continuing with the first generation redundancy and finally the primary.  
 </t>
 <t>
-Note that the normal case is that in the first packet, only the primary data has contents. The redundant data has contents in the first received packet from a source only after initial packet loss.
+Note: The normal case is that in the first packet, only the primary data has contents. The redundant data has contents in the first received packet from a source only after initial packet loss.
 </t>
 <t>
 If the packet is not the first packet from a source, then if the second generation redundant data is available, its timestamp SHALL be created by subtracting its timestamp offset from the RTP timestamp. If the resulting timestamp is later than the latest retrieved data from the same source, then the redundant data SHALL be retrieved and appended to the receive buffer. The process SHALL be continued in the same way for the first generation redundant data. After that, the primary data SHALL be retrieved from the packet and appended to the receive buffer for the source.     
@@ -497,7 +502,7 @@ Unicode character 'BOM' is used as a start indication and sometimes used as a fi
   <section numbered="true" toc="default">
     <name>Performance considerations</name>
     <t>
-      This solution has good performance for up to five participants simultaneously sending text. At higher numbers of participants simultaneously sending text, a jerkiness is visible in the presentation of text. With ten participants simultaneously transmitting text, the jerkiness is about one second. Even so, the transmission of text catches up, so there is no resulting total delay introduced. The solution is therefore suitable for emergency service use, relay service use, and small or well-managed larger multimedia conferences. Only in large unmanaged conferences with a high number of participants there may on very rare occasions appear situations when many participants happen to send text simultaneously, resulting in unpleasantly long switching times. It should be noted that it is only the number of users sending text within the same moment that causes jerkiness, not the total number of users with RTT capability.
+      This solution has good performance for up to five participants simultaneously sending text. At higher numbers of participants simultaneously sending text, a jerkiness is visible in the presentation of text. With ten participants simultaneously transmitting text, the jerkiness is about one second. Even so, the transmission of text catches up, so there is limited delay of new text. The solution is therefore suitable for emergency service use, relay service use, and small or well-managed larger multimedia conferences. Only in large unmanaged conferences with a high number of participants there may on very rare occasions appear situations when many participants happen to send text simultaneously, resulting in unpleasantly jerky presentation of text from each sending participant. It should be noted that it is only the number of users sending text within the same moment that causes jerkiness, not the total number of users with RTT capability.
     </t>
   </section>
 
@@ -505,7 +510,7 @@ Unicode character 'BOM' is used as a start indication and sometimes used as a fi
     <name>Security for session control and media</name>
   <t>
 
-  Security SHOULD be applied on both session control and media. In applications where legacy endpoints without security may exist, a negotiation SHOULD be performed to decide if security by encryption will be applied. If no other security solution is mandated for the application, then RFC 8643 OSRTP<xref target="RFC8643" format="default"/> SHOULD be applied to negotiate SRTP media security with DTLS. Most SDP examples below are for simplicity expressed without the security additions. The principles (but not all details) for applying DTLS-SRTP security is shown in a couple of the following examples.
+  Security SHOULD be applied on both session control and media. In applications where legacy endpoints without security may exist, a negotiation SHOULD be performed to decide if security by encryption will be applied. If no other security solution is mandated for the application, then RFC 8643 OSRTP <xref target="RFC8643" format="default"/> SHOULD be applied to negotiate SRTP media security with DTLS. Most SDP examples below are for simplicity expressed without the security additions. The principles (but not all details) for applying DTLS-SRTP <xref target="RFC5764" format="default"/> security is shown in a couple of the following examples.
 
   </t>
   </section>
@@ -576,94 +581,109 @@ Unicode character 'BOM' is used as a start indication and sometimes used as a fi
 
       </section>
       <section anchor="pseq" numbered="true" toc="default">
-      <name>Packet sequence example from a source switch</name>
+      <name>Packet sequence example from interleaved transmission</name>
         <t>
 
-  This example shows a symbolic flow of packets from a mixer including loss and recovery. The sequence includes a source switch. A and B are sources of RTT.
-  P indicates primary data. R1 is first redundant generation data and R2 is second redundant generation data. A1, B1, A2 etc are text chunks (T140blocks) received from the respective sources. X indicates dropped packet between the mixer and a receiver. The session is assumed to use original and two redundant generations of RTT.
+  This example shows a symbolic flow of packets from a mixer including loss and recovery. The sequence includes interleaved transmission of text from two RTT sources A and B.
+  P indicates primary data. R1 is first redundant generation data and R2 is the second redundant generation data. A1, B1, A2 etc are text chunks (T140blocks) received from the respective sources and sent on to the receiver by the mixer. X indicates dropped packet between the mixer and a receiver. The session is assumed to use original and two redundant generations of RTT.
   </t>
         <artwork name="" type="" align="left" alt=""><![CDATA[
-  |----------------|
-  |Seq no 101      |
-  |CC=1            |
-  |CSRC list A     |
-  |R2: A1          |
-  |R1: A2          |
-  |P:  A3          |
-  |----------------|
+  |-----------------------|
+  |Seq no 101, Time=20400 |
+  |CC=1                   |
+  |CSRC list A            |
+  |R2: A1, Offset=600     |
+  |R1: A2, Offset=300     |
+  |P:  A3                 |
+  |-----------------------|
   ]]></artwork>
         <t>
-  Assuming that earlier packets ( with text A1 and A2) were received in sequence, text A3 is received from packet 101 and assigned to reception area A. The mixer is now assumed to have received text from source B and will send that text 100 ms after packet 101. Transmission of A2 and A3 as redundancy is planned for 200 ms after packet 101.
+  Assuming that earlier packets ( with text A1 and A2) were received in sequence, text A3 is received from packet 101 and assigned to reception area A. The mixer is now assumed to have received text from source B and will send that text 100 ms after packet 101. Transmission of A2 and A3 as redundancy is planned for 330 ms after packet 101 if no new text from A is ready to be sent before that.
   </t>
         <artwork name="" type="" align="left" alt=""><![CDATA[
-  |----------------|
-  |Seq no 102      |
-  |CC=1            |
-  |CSRC list B     |
-  |R2  Empty       |
-  |R1: Empty       |
-  |P:  B1          |
-  |----------------|
+  |-----------------------|
+  |Seq no 102, Time=20500 |
+  |CC=1                   |
+  |CSRC list B            |
+  |R2  Empty, Offset=600  |
+  |R1: Empty, Offset=300  |
+  |P:  B1                 |
+  |-----------------------|
+  Packet 102 is received.
   B1 is retrieved from this packet. Redundant transmission of
-  B1 is planned 200 ms after packet 102.
+  B1 is planned 330 ms after packet 102.
   ]]></artwork>
         <artwork name="" type="" align="left" alt=""><![CDATA[
-  X----------------|
-  X Seq no 103     |
-  X CC=1           |
-  X CSRC list A    |
-  X R2: A2         |
-  X R1: A3         |
-  X P:  Empty      |
-  X----------------|
+  X------------------------|
+  X Seq no 103, Timer=20730|
+  X CC=1                   |
+  X CSRC list A            |
+  X R2: A2, Offset=630     |
+  X R1: A3, Offset=330     |
+  X P:  Empty              |
+  X------------------------|
   Packet 103 is assumed to be dropped in network problems. It
   contains redundancy for A. Sending A3 as second level 
-  redundancy is planned for 100 ms after packet 104.
+  redundancy is planned for 330 ms after packet 104.
   ]]></artwork>
         <artwork name="" type="" align="left" alt=""><![CDATA[
-  X----------------|
-  X Seq no 104     |
-  X CC=1           |
-  X CSRC list B    |
-  X R2: Empty      |
-  X R1: B1         |
-  X P2: B2         |
-  X----------------|
-  Packet 104 contains text from B, assumed dropped in network
-  problems. The mixer has A3 redundancy to send and plans it
-  after 100 ms.
+  X------------------------|
+  X Seq no 104, Timer=20820|
+  X CC=1                   |
+  X CSRC list B            |
+  X R2: Empty, Offset=600  |
+  X R1: B1, Offset=300     |
+  X P:  B2                 |
+  X------------------------|
+  Packet 104 contains text from B, including new B2 and
+  redundant B1. It is assumed dropped in network
+  problems. 
+  The mixer has A3 redundancy to send but no new text
+  appears from A and therefore the redundancy is sent
+  330 ms after the previous packet with text from A.
+
   ]]></artwork>
         <artwork name="" type="" align="left" alt=""><![CDATA[
-  X----------------|
-  X Seq no 105     |
-  X CC=1           |
-  X CSRC list A    |
-  X R2: A3         |
-  X R1: Empty      |
-  X P:  Empty      |
-  X----------------|
-  Packet 105 is assumed to be dropped in network problems
+  |------------------------|
+  | Seq no 105, Timer=21060|
+  | CC=1                   |
+  | CSRC list A            |
+  | R2: A3, Offset=660     |
+  | R1: Empty, Offset=330  |
+  | P:  Empty              |
+  |------------------------|
+  Packet 105 is received.
+  A gap for lost 103, and 104 is detected.
+  Assume that no other loss was detected the last second. 
+  Then it can be concluded that nothing was totally lost.
+  
+  R2 is checked. Its original time was 21040-660=20400. 
+  A packet with text from A was received with that 
+  timestamp, so nothing needs to be recovered.
+  
   B1 and B2 still needs to be transmitted as redundancy.
-  This is planned 320 ms after packet 105.
+  This is planned 330 ms after packet 105. But that 
+  would be at 21150 which is only 90 ms after the 
+  latest packet. It is instead transmitted at 
+  time 21160. 
   ]]></artwork>
         <artwork name="" type="" align="left" alt=""><![CDATA[
-  |----------------|
-  |Seq no 106      |
-  |CC=1            |
-  |CSRC list B     |
-  | R2: B1         |
-  | R1: B2         |
-  | P:  Empty      |
-  |----------------|
+  |-----------------------|
+  |Seq no 106, Timer=21160|
+  |CC=1                   |
+  |CSRC list B            |
+  | R2: B1, Offset=660    |
+  | R1: B2, Offset=340    |
+  | P:  Empty             |
+  |-----------------------|
   ]]></artwork>
   <t>
-  Packet 106 is received 320 ms after packet 105. The latest received sequence number was 102.
-  103,104,105 were lost. Three packets were thus lost during less than one second. The simple rule for detection of text loss then results in that an indicator for possible loss  (U'FFFD) <xref target="T140ad1" format="default"/>, should be inserted generally for the mixer.
+  Packet 106 is received. 
   </t>
   <t>
-The second level redundancy in packet 106 is B1 and has timestamp offset 620 ms.
-The timestamp of packet 106 minus 620 is the timestamp of packet 101 which was received. So B1 does not need to be retrieved.
-The first level redundancy in packet 106 is 420. The timestamp of packet 106 minus 420 is later than the latest received packet with source A. Therefore B2 is retrieved and assigned to the input buffer for source B.   
+The second level redundancy in packet 106 is B1 and has timestamp offset 660 ms.
+The timestamp of packet 106 minus 660 is 20500 which is the timestamp of packet 101 THAT was received. So B1 does not need to be retrieved.
+The first level redundancy in packet 106 has offset 340. The timestamp of packet 106 minus 340 is 20820. That is later than the latest received packet with source B. Therefore B2 is retrieved and assigned to the input buffer for source B.   
 No primary is available in packet 106
   </t>
   <t>
@@ -699,7 +719,7 @@ Strict application of T.140 <xref target="T140" format="default"/> is of essence
  T.140 <xref target="T140" format="default"/> specifies a set of presentation control codes to include in the stream. Some of them are optional. Implementations MUST be able to ignore optional control codes that they do not support.
 </t>
       <t>
-There is no strict "message" concept in real-time text. Line Separator SHALL be used as a separator allowing a part of received text to be grouped in presentation. The characters "CRLF" may be used by other implementations as replacement for Line Separator. The "CRLF" combination SHALL be erased by just one erasing action, just as the Line Separator. Presentation functions are allowed to group text for presentation in smaller groups than the line separators imply and present such groups with source indication together with text groups from other sources (see the following presentation examples). Erasure has no specific limit by any delimiter in the text stream.
+There is no strict "message" concept in real-time text. The Unicode Line Separator character SHALL be used as a separator allowing a part of received text to be grouped in presentation. The characters "CRLF" may be used by other implementations as replacement for Line Separator. The "CRLF" combination SHALL be erased by just one erasing action, just as the Line Separator. Presentation functions are allowed to group text for presentation in smaller groups than the line separators imply and present such groups with source indication together with text groups from other sources (see the following presentation examples). Erasure has no specific limit by any delimiter in the text stream.
 </t>
       <section numbered="true" toc="default">
         <name>Presentation by multi-party aware endpoints</name>
@@ -711,7 +731,7 @@ The receiving party MAY separate presentation of parts of text from a source in 
 When text is received from multiple original sources, the presentation SHOULD provide a view where text is added in multiple presentation fields.
 </t>
         <t>
-If the presentation presents text from different sources in one common area, the presenting endpoint SHOULD insert text from the local user ended at suitable points merged with received text to indicate the relative timing for when the text groups were completed. In this presentation mode, the receiving endpoint SHALL present the source of the different groups of text.
+If the presentation presents text from different sources in one common area, the presenting endpoint SHOULD insert text from the local user ended at suitable points merged with received text to indicate the relative timing for when the text groups were completed. In this presentation mode, the receiving endpoint SHALL present the source of the different groups of text. This presentation style is called the "chat" style here.
 </t>
         <t>A view of a three-party RTT call in chat style is shown in this example .</t>
 
@@ -1099,6 +1119,15 @@ The requirement to transfer information about the user in RTCP reports in SDES, 
     </section>
     <section numbered="true" toc="default">
       <name>Change history</name>
+	  <section numbered="true" toc="default">
+          <name>Changes included in draft-ietf-avtcore-multi-party-rtt-mix-11</name>
+          <t>
+		  Timestamps and timestamp offsets added to the packet examples in section 3.23, and the description corrected.
+		  </t>
+		  <t>
+		  A number of minor corrections added in sections 3.10 - 3.23.
+		  </t>
+		  </section>
 	  <section numbered="true" toc="default">
           <name>Changes included in draft-ietf-avtcore-multi-party-rtt-mix-10</name>
           <t>
