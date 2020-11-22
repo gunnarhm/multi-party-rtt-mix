@@ -606,6 +606,7 @@ Unicode character 'BOM' is used as a start indication and sometimes used as a fi
   |R1: Empty, Offset=300  |
   |P:  B1                 |
   |-----------------------|
+  Packet 102 is received.
   B1 is retrieved from this packet. Redundant transmission of
   B1 is planned 330 ms after packet 102.
   ]]></artwork>
@@ -629,7 +630,7 @@ Unicode character 'BOM' is used as a start indication and sometimes used as a fi
   X CSRC list B            |
   X R2: Empty, Offset=600  |
   X R1: B1, Offset=300     |
-  X P2: B2                 |
+  X P:  B2                 |
   X------------------------|
   Packet 104 contains text from B, including new B2 and
   redundant B1. It is assumed dropped in network
@@ -637,7 +638,7 @@ Unicode character 'BOM' is used as a start indication and sometimes used as a fi
   The mixer has A3 redundancy to send but no new text
   appears from A and therefore the redundancy is sent
   330 ms after the previous packet with text from A.
-  after  ms.
+
   ]]></artwork>
         <artwork name="" type="" align="left" alt=""><![CDATA[
   |------------------------|
