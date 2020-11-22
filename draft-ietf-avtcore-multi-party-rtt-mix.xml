@@ -307,8 +307,11 @@ When transmitted from a mixer during a multi-party session, a CSRC list SHALL be
           </section>
           <section numbered="true" toc="default"><name>Transmission interval</name>
             <t>
-      A "text/red" transmitter in a mixer SHOULD send packets distributed in time as long as there is something (new or redundant T140blocks) to transmit.  The maximum transmission interval SHOULD then be 330 ms. It is RECOMMENDED to send next packet to a receiver as soon as new text to that receiver is available, as long as the time after the latest sent packet to the same receiver is more than or equal to 100 ms, and also the maximum character rate ("CPS") to the receiver is not exceeded. The intention is to keep the latency low and network load limited while keeping a good protection against text loss in bursty packet loss conditions.
+      A "text/red" or "text/t140" transmitter in a mixer SHOULD send packets distributed in time as long as there is something (new or redundant T140blocks) to transmit.  The maximum transmission interval SHOULD then be 330 ms. It is RECOMMENDED to send next packet to a receiver as soon as new text to that receiver is available, as long as the time after the latest sent packet to the same receiver is more than or equal to 100 ms, and also the maximum character rate ("CPS") to the receiver is not exceeded. The intention is to keep the latency low and network load limited while keeping a good protection against text loss in bursty packet loss conditions.
     </t>
+	<t>
+	For a transmitter not acting in a mixer, the same transmission interval principles apply, but the maximum transmission interval SHOULD be 300 ms.
+	</t>
   </section>
   <section numbered="true" toc="default"><name>Only one source per packet</name>
     <t> New and redundant text from one source SHALL be transmitted in the same packet if available for transmission at the same time. Text from different sources MUST NOT be transmitted in the same packet.
