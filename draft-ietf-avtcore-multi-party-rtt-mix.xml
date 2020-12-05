@@ -25,11 +25,11 @@
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of popular PIs -->
-<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" consensus="true" docName="draft-ietf-avtcore-multi-party-rtt-mix-11" ipr="trust200902" updates="RFC 4103" obsoletes="" submissionType="IETF" xml:lang="en" tocInclude="true" tocDepth="2" symRefs="true" sortRefs="true" version="3">
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="std" consensus="true" docName="draft-ietf-avtcore-multi-party-rtt-mix-12" ipr="trust200902" updates="RFC 4103" obsoletes="" submissionType="IETF" xml:lang="en" tocInclude="true" tocDepth="2" symRefs="true" sortRefs="true" version="3">
   <!-- xml2rfc v2v3 conversion 2.42.0 -->
   <front>
     <title abbrev="RTP-mixer format for multi-party RTT">RTP-mixer formatting of multi-party Real-time text</title>
-    <seriesInfo name="Internet-Draft" value="draft-ietf-avtcore-multi-party-rtt-mix-11"/>
+    <seriesInfo name="Internet-Draft" value="draft-ietf-avtcore-multi-party-rtt-mix-12"/>
     <author fullname="Gunnar Hellstrom" initials="G" surname="Hellstrom">
       <organization>Gunnar Hellstrom Accessible Communication</organization>
       <address>
@@ -98,7 +98,7 @@ The redundancy scheme of RFC 4103 <xref target="RFC4103" format="default"/> enab
 
 <t>
 Real-time text mixers for multi-party sessions therefore need to insert the
-source of each transmitted group of text from a conference participant so that the text can be transmitted interleaved with text groups from different sources in the rate they are created. This enables the text groups to be presented by endpoints in suitable grouping with other text from the same source. The presentation can then be arranged so that text from different sources can be presented in real-time and easily read while it is possible for a reading user to also perceive approximately when the text was created in real time by the different parties. The transmission and mixing is intended to be done in a general way so that presentation can be arranged in a layout decided by the endpoint.
+source of each transmitted group of text from a conference participant so that the text can be transmitted interleaved with text groups from different sources in the rate they are created. This enables the text groups to be presented by endpoints in suitable grouping with other text from the same source. The presentation can then be arranged so that text from different sources can be presented in real-time and easily read. At the same time it is possible for a reading user to perceive approximately when the text was created in real time by the different parties. The transmission and mixing is intended to be done in a general way so that presentation can be arranged in a layout decided by the endpoint.
 </t>
  <t>
  There are existing implementations of RFC 4103 without the updates from this document. These will not be able to receive and present real-time text mixed for multi-party aware endpoints.
@@ -134,7 +134,7 @@ source of each transmitted group of text from a conference participant so that t
    The "text/red" format in RFC 4103 with shorter transmission interval, and indicating source in CSRC.
  </dt>
  <dd>
-   The "text/red" format with "text/t140" payload in a single RTP stream can be sent with 100 ms packet intervals instead of the regular 300 ms. The source is indicated in the CSRC field. Source switching can then be done every 100 ms while simultaneous transmission occurs. With five participants sending text simultaneously, the switching and transmission performance is good. With more simultaneously sending participants, there will be a noticable jerkiness in text presentation. The jerkiness will be more expressed the more participants who send text simultaneously. With ten sending participants, the jerkiness will be about one second. Text sent from a source at the end of the period its text is sent by the mixer will have close to zero extra delay. Recent text will be presented with no or low delay. The one second jerkiness will be noticable and slightly unpleasant, but corresponds in time to what typing humans often cause by hesitation or changing position while typing. A benefit of this method is that no new packet format needs to be introduced and implemented. Since simultaneous typing by more than two parties is very rare, and in most applications also more than three parties in a call is rare, this method can be used successfully with good performance. Recovery of text in case of packet loss is based on analysis of timestamps of received redundancy versus earlier received text. Negotiation is based on a new sdp media attribute "rtt-mixer". This method is selected to be the main one specified in this document.
+   The "text/red" format with "text/t140" payload in a single RTP stream can be sent with 100 ms packet intervals instead of the regular 300 ms. The source is indicated in the CSRC field. Source switching can then be done every 100 ms while simultaneous transmission occurs. With five participants sending text simultaneously, the switching and transmission performance is good. With more simultaneously sending participants, there will be a noticable jerkiness in text presentation. The jerkiness will be more expressed the more participants who send text simultaneously. With ten sending participants, the jerkiness will be about one second. Text sent from a source at the end of the period its text is sent by the mixer will have close to zero extra delay. Recent text will be presented with no or low delay. The one second jerkiness will be noticable and slightly unpleasant, but corresponds in time to what typing humans often cause by hesitation or changing position while typing. A benefit of this method is that no new packet format needs to be introduced and implemented. Since simultaneous typing by more than two parties is very rare, this method can be used successfully with good performance. Recovery of text in case of packet loss is based on analysis of timestamps of received redundancy versus earlier received text. Negotiation is based on a new sdp media attribute "rtt-mixer". This method is selected to be the main one specified in this document.
 
  </dd>
     <dt>A new "text" media subtype with up to 15 sources in each packet.</dt>
@@ -1119,6 +1119,12 @@ The requirement to transfer information about the user in RTCP reports in SDES, 
     </section>
     <section numbered="true" toc="default">
       <name>Change history</name>
+	  <section numbered="true" toc="default">
+          <name>Changes included in draft-ietf-avtcore-multi-party-rtt-mix-12</name>
+          <t>
+		  
+		  </t>
+		  </section>
 	  <section numbered="true" toc="default">
           <name>Changes included in draft-ietf-avtcore-multi-party-rtt-mix-11</name>
           <t>
