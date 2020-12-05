@@ -134,7 +134,7 @@ source of each transmitted group of text from a conference participant so that t
    The "text/red" format in RFC 4103 with shorter transmission interval, and indicating source in CSRC.
  </dt>
  <dd>
-   The "text/red" format with "text/t140" payload in a single RTP stream can be sent with 100 ms packet intervals instead of the regular 300 ms. The source is indicated in the CSRC field. Source switching can then be done every 100 ms while simultaneous transmission occurs. With five participants sending text simultaneously, the switching and transmission performance is good. With more simultaneously sending participants, there will be a noticable jerkiness in text presentation. The jerkiness will be more expressed the more participants who send text simultaneously. With ten sending participants, the jerkiness will be about one second. Text sent from a source at the end of the period its text is sent by the mixer will have close to zero extra delay. Recent text will be presented with no or low delay. The one second jerkiness will be noticable and slightly unpleasant, but corresponds in time to what typing humans often cause by hesitation or changing position while typing. A benefit of this method is that no new packet format needs to be introduced and implemented. Since simultaneous typing by more than two parties is very rare, this method can be used successfully with good performance. Recovery of text in case of packet loss is based on analysis of timestamps of received redundancy versus earlier received text. Negotiation is based on a new sdp media attribute "rtt-mixer". This method is selected to be the main one specified in this document.
+   The "text/red" format with "text/t140" payload in a single RTP stream can be sent with 100 ms packet intervals instead of the regular 300 ms. The source is indicated in the CSRC field. Source switching can then be done every 100 ms while simultaneous transmission occurs. With five participants sending text simultaneously, the switching and transmission performance is good. With more simultaneously sending participants, there will be a noticeable jerkiness in text presentation. The jerkiness will be more expressed the more participants who send text simultaneously. With ten sending participants, the jerkiness will be about one second. Text sent from a source at the end of the period its text is sent by the mixer will have close to zero extra delay. Recent text will be presented with no or low delay. The one second jerkiness will be noticeable and slightly unpleasant, but corresponds in time to what typing humans often cause by hesitation or changing position while typing. A benefit of this method is that no new packet format needs to be introduced and implemented. Since simultaneous typing by more than two parties is very rare, this method can be used successfully with good performance. Recovery of text in case of packet loss is based on analysis of timestamps of received redundancy versus earlier received text. Negotiation is based on a new sdp media attribute "rtt-mixer". This method is selected to be the main one specified in this document.
 
  </dd>
     <dt>A new "text" media subtype with up to 15 sources in each packet.</dt>
@@ -142,7 +142,7 @@ source of each transmitted group of text from a conference participant so that t
    The mechanism makes use of the RTP
    mixer model specified in RFC3550<xref target="RFC3550" format="default"/>. Text from up to 15 sources can be included in each packet. Packets are normally sent every 300 ms. The mean delay will be 150 ms. The sources are indicated in strict order in the CSRC list of the RTP packets. A new redundancy packet format is specified. This method would result in good performance, but would require standardisation and implementation of new releases in the target technologies that would take more time than desirable to complete. It was therefore not selected to be included in this document.
 </dd>
-<dt>The presentation planned by the mixer for multi-party unaware endpoints.</dt>
+<dt>Mixer prepares presentation of text from multiple parties</dt>
 <dd>
   It is desirable to have a method that does not require any modifications in existing user devices implementing RFC 4103 for RTT without explicit support of multi-party sessions. This is possible by having the mixer insert a new line and a text formatted source label before each switch of text source in the stream. Switch of source can only be done in places in the text where it does not disturb the perception of the contents. Text from only one source can be presented in real time at a time. The delay will therefore be varying. The method has also other limitations, but is included in this document as a fallback method. In calls where parties take turns properly by ending their entries with a new line, the limitations will have limited influence on the user experience. while only two parties send text, these two will see the text in real time with no delay. This method is specified as a fallback method in this document.
 
@@ -166,7 +166,7 @@ source of each transmitted group of text from a conference participant so that t
         <xref target="RFC2119" format="default"/>.
       </t>
       <t>
-	 The terms SDES, CNAME, NAME, SSRC, CSRC, CSRC list, CC, RTCP, RTP-mixer, RTP-translator are explained in <xref target="RFC3550" format="default"/>
+	 The terms SDES, CNAME, NAME, SSRC, CSRC, CSRC list, CC, RTCP, RTP-mixer, RTP-translator as defined in <xref target="RFC3550" format="default"/>
       </t>
       <t>
 	 The term "T140block" is defined in RFC 4103 <xref target="RFC4103" format="default"/>  to contain one or more T.140 code elements.
@@ -196,6 +196,9 @@ source of each transmitted group of text from a conference participant so that t
         <t>
           In all these applications, normally only one participant at a time will send long text utterances. In some cases, one other participant will occasionally contribute with a longer comment simultaneously. That may also happen in some rare cases when text is interpreted to text in another language in a conference. Apart from these cases, other participants are only expected to contribute with very brief utterings while others are sending text.
         </t>
+		<t>
+		Users expect that the text they send is presented in real-time in a readable way to the other participants even if they send simultaneously with other users and even when they make brief edit operations of their text by backspacing and correcting their text.   
+		</t>
         <t>
           Text is supposed to be human generated, by some text input means, such as typing on a keyboard or using speech-to-text technology. Occasional small cut-and-paste operations may appear even if that is not the initial purpose of real-time text.
         </t>
@@ -216,7 +219,7 @@ source of each transmitted group of text from a conference participant so that t
 The main purpose of this document is to specify a method for true multi-party real-time text mixing for multi-party aware endpoints. The method makes use of the current format for real-time text in <xref target="RFC4103" format="default"/>. It is an update of RFC 4103 by a clarification on one way to use it in the multi-party situation. It is done by completing a negotiation for this kind of multi-party capability and by indicating source in the CSRC element in the RTP packets. Specific considerations are made to be able to recover text after packet loss. 
 </t>
 <t>
-The detailed procedures for the multi-party aware case are specified in <xref target="nego2" format="default"/>
+The detailed procedures for the multi-party aware case are specified in <xref target="nego2" format="default"/>.
 </t>
 <t>
    Please use <xref target="RFC4103" format="default"/> as reference when reading the specification.
@@ -225,7 +228,7 @@ The detailed procedures for the multi-party aware case are specified in <xref ta
   <section numbered="true" toc="default">
     <name>Mixing for multi-party unaware endpoints</name>
 <t>
-  A method is also specified in this document for cases when the endpoint participating in a multi-party call does not itself implement any solution for multi-party handling of real-time text. The solution requires the mixer to insert text dividers and readable
+  A method is also specified in this document for cases when the endpoint participating in a multi-party call does not itself implement the solution for multi-party handling of real-time text specified in <xref target="nego2" format="default"/>. The method requires the mixer to insert text dividers and readable
     labels and only send text from one source at a time until a suitable point appears for source change.
     This solution is a fallback method with functional limitations. It acts on the presentation level.
 </t>
@@ -307,19 +310,19 @@ When transmitted from a mixer during a multi-party session, a CSRC list SHALL be
           </section>
           <section numbered="true" toc="default"><name>Transmission interval</name>
             <t>
-      A "text/red" or "text/t140" transmitter in a mixer SHOULD send packets distributed in time as long as there is something (new or redundant T140blocks) to transmit.  The maximum transmission interval SHOULD then be 330 ms. It is RECOMMENDED to send next packet to a receiver as soon as new text to that receiver is available, as long as the time after the latest sent packet to the same receiver is more than or equal to 100 ms, and also the maximum character rate ("CPS") to the receiver is not exceeded. The intention is to keep the latency low and network load limited while keeping a good protection against text loss in bursty packet loss conditions.
+      A "text/red" or "text/t140" transmitter in a mixer SHOULD send packets distributed in time as long as there is something (new or redundant T140blocks) to transmit.  The maximum transmission interval SHOULD then be 330 ms. It is RECOMMENDED to send the next packet to a receiver as soon as new text to that receiver is available, as long as the time after the latest sent packet to the same receiver is more than or equal to 100 ms, and also the maximum character rate ("CPS") to the receiver is not exceeded. The intention is to keep the latency low and network load limited while keeping a good protection against text loss in bursty packet loss conditions.
     </t>
 	<t>
 	For a transmitter not acting in a mixer, the same transmission interval principles apply, but the maximum transmission interval SHOULD be 300 ms.
 	</t>
   </section>
   <section numbered="true" toc="default"><name>Only one source per packet</name>
-    <t> New and redundant text from one source SHALL be transmitted in the same packet if available for transmission at the same time. Text from different sources MUST NOT be transmitted in the same packet.
+    <t> New text and redundant copies of earlier text from one source SHALL be transmitted in the same packet if available for transmission at the same time. Text from different sources MUST NOT be transmitted in the same packet.
       	    </t>
           </section>
           <section numbered="true" toc="default"><name>Do not send received text to the originating source</name>
             <t>
-              Text received to a mixer from a participant SHOULD NOT be included in transmission from the mixer to that participant.
+              Text received by a mixer from a participant SHOULD NOT be included in transmission from the mixer to that participant.
             </t>
           </section>
             <section numbered="true" toc="default"><name>Clean incoming text</name>
@@ -364,7 +367,7 @@ The source with the oldest text received in the mixer or oldest redundant text S
 	  The SSRC of the source shall be placed as the only member in the CSRC-list.
 	  </t>
       <t>
-Note: The CSRC-list in an RTP packet only includes the participant who's text is included in text blocks. It is not the same as the total list of participants in a conference. With audio and video media, the CSRC-list would often contain all participants who are not muted whereas text participants that don't type are completely silent and thus are not represented in RTP packet CSRC-lists.
+Note: The CSRC-list in an RTP packet only includes the participant whose text is included in text blocks. It is not the same as the total list of participants in a conference. With audio and video media, the CSRC-list would often contain all participants who are not muted whereas text participants that don't type are completely silent and thus are not represented in RTP packet CSRC-lists.
       </t>
       </section>
      
@@ -426,7 +429,7 @@ Note: The CSRC-list in an RTP packet only includes the participant who's text is
       A mixer SHALL send RTCP reports with SDES, CNAME and NAME information about the sources in the multi-party call. This makes it possible for participants to compose a suitable label for text from each source.
             </t>
             <t>
-              Integrity considerations SHALL be considered when composing these fields.
+              Integrity SHALL be considered when composing these fields. They contain name and address information that may be sensitive to transmit in its entirety e.g. to unauthenticated participants. Similar considerations SHOULD be taken as for other media.
             </t>
           </section>
     <section numbered="true" toc="default">
@@ -438,7 +441,7 @@ The "text/red" receiver included in an endpoint with presentation functions will
 <section numbered="true" toc="default"><name>Multi-party vs two-party use</name>
       <t>
 
-If the "CC" field value of a received packet is 1, it indicates that multi-party transmission is active, and the receiver MUST be prepared to act on the source according to its role. If the CC value is 0, the connection is point-to-point.
+If the "CC" field value of a received packet is 1, it indicates that multi-party transmission is active, and the receiver MUST be prepared to act on the source according to the role of the receiver. If the CC value is 0, the packet is directly from a party not acting as a mixer.
 
 </t>
 </section>
@@ -462,7 +465,7 @@ If a sequence number gap appears and still exists after some defined short time 
 If it is known that only one source is active in the RTP session, then it is likely that a gap equal to or larger than the agreed number of redundancy generations (including the primary) causes text loss. In that case a t140block SHALL be created with a marker for possible text loss <xref target="T140ad1" format="default"/> and assigned to the source and inserted in the reception buffer for that source.
 </t>
 <t>
-If it is known that more than one source is active in the RTP session, then it is not possible in general to evaluate if text was lost when packets were lost. With two active sources and the recommended number of redundancy generations (3), it can take a gap of five consecutive lost packets until any text may be lost, but text loss can also appear if three non-consecutive packets are lost when they contained consecutive data from the same source. A simple method to decide when there is risk for resulting text loss is to evaluate if three or more packets were lost within one second. Then a t140block SHALL be created with a marker for possible text loss <xref target="T140ad1" format="default"/> and assigned to the SSRC of the transmitter as a general input from the mixer.  
+If it is known that more than one source is active in the RTP session, then it is not possible in general to evaluate if text was lost when packets were lost. With two active sources and the recommended number of redundancy generations (3), it can take a gap of five consecutive lost packets until any text may be lost, but text loss can also appear if three non-consecutive packets are lost when they contained consecutive data from the same source. A simple method to decide when there is risk for resulting text loss is to evaluate if three or more packets were lost within one second. Then a t140block SHALL be created with a marker for possible text loss <xref target="T140ad1" format="default"/> and assigned to the SSRC of the transmitter as a general input from the mixer with CC=0.  
 </t>
 <t>
 Implementations MAY apply more refined methods for more reliable detection of if text was lost or not. Any refined method SHOULD rather falsely mark possible loss when there was no loss instead of not marking possible loss when there was loss. 
