@@ -283,10 +283,10 @@ Both parties shall indicate their capability in a session setup or modification,
     <section numbered="true" toc="default">
       <name>Use of fields in the RTP packets</name>
 <t>
-The CC field SHALL show the number of members in the CSRC list, which SHALL be one (1) in transmissions from a mixer involved in a multi-party session, and otherwise 0.
+The CC field SHALL show the number of members in the CSRC list, which SHALL be one (1) in transmissions from a mixer  when conveying text from other sources in a multi-party session, and otherwise 0.
 </t>
       <t>
-When transmitted from a mixer during a multi-party session, a CSRC list SHALL be included in the packet. The single member in the CSRC-list SHALL contain the SSRC of the source of the T140blocks in the packet. When redundancy is used, the recommended level of redundancy is to use one primary and two redundant generations of T140blocks. In some cases, a primary or redundant T140block is empty, but is still represented by a member in the redundancy header.
+When text is conveyed by a mixer during a multi-party session, a CSRC list SHALL be included in the packet. The single member in the CSRC-list SHALL contain the SSRC of the source of the T140blocks in the packet. When redundancy is used, the recommended level of redundancy is to use one primary and two redundant generations of T140blocks. In some cases, a primary or redundant T140block is empty, but is still represented by a member in the redundancy header.
 </t>
 <t>
   From other aspects, the contents of the RTP packets are equal to what is specified in <xref target="RFC4103" format="default"/>.
@@ -438,37 +438,27 @@ Note: The CSRC-list in an RTP packet only includes the participant whose text is
 
 The "text/red" receiver included in an endpoint with presentation functions will receive RTP packets in the single stream from the mixer, and SHALL distribute the T140blocks for presentation in presentation areas for each source. Other receiver roles, such as gateways or chained mixers are also feasible, and requires consideration if the stream shall just be forwarded, or distributed based on the different sources.
 </t>
-<section numbered="true" toc="default"><name>Multi-party vs two-party use</name>
+<section numbered="true" toc="default"><name>Acting on the source of the packet contents</name>
       <t>
-
-If the "CC" field value of a received packet is 1, it indicates that multi-party transmission is active, and the receiver MUST be prepared to act on the source according to the role of the receiver. If the CC value is 0, the packet is directly from a party not acting as a mixer.
+If the "CC" field value of a received packet is 1, it indicates that
+   the text is conveyed from a source indicated in the single member in the CSRC-list, and the receiver MUST act on the source according to its role. If the CC value is 0, the source is indicated in the SSRC field.
 
 </t>
 </section>
-<section numbered="true" toc="default"><name>Level of redundancy</name>
-<t>
-The used level of redundancy generations SHALL be evaluated from the received packet contents. The number of generations (including the primary) is equal to the number of members in the redundancy header.
-</t>
-</section>
-<section numbered="true" toc="default"><name>Empty T140blocks</name>
-      <t>
-Empty T140blocks are included as fillers for unused primary or redundancy levels in the packets. They just do not provide any contents.
-      </t>
-    </section>
 <section numbered="true" toc="default"><name>Detection and indication of possible text loss</name>
 
       <t>
 The RTP sequence numbers of the received packets SHALL be monitored for gaps and packets out of order.
-If a sequence number gap appears and still exists after some defined short time for jitter resolution, the packets in the gap SHALL be regarded lost.
+If a sequence number gap appears and still exists after some defined short time for jitter resolution, the packets in the gap SHALL be regarded as lost.
 </t>
 <t>
 If it is known that only one source is active in the RTP session, then it is likely that a gap equal to or larger than the agreed number of redundancy generations (including the primary) causes text loss. In that case a t140block SHALL be created with a marker for possible text loss <xref target="T140ad1" format="default"/> and assigned to the source and inserted in the reception buffer for that source.
 </t>
 <t>
-If it is known that more than one source is active in the RTP session, then it is not possible in general to evaluate if text was lost when packets were lost. With two active sources and the recommended number of redundancy generations (3), it can take a gap of five consecutive lost packets until any text may be lost, but text loss can also appear if three non-consecutive packets are lost when they contained consecutive data from the same source. A simple method to decide when there is risk for resulting text loss is to evaluate if three or more packets were lost within one second. Then a t140block SHALL be created with a marker for possible text loss <xref target="T140ad1" format="default"/> and assigned to the SSRC of the transmitter as a general input from the mixer with CC=0.  
+If it is known that more than one source is active in the RTP session, then it is not possible in general to evaluate if text was lost when packets were lost. With two active sources and the recommended number of redundancy generations (3), it can take a gap of five consecutive lost packets until any text may be lost, but text loss can also appear if three non-consecutive packets are lost when they contained consecutive data from the same source. A simple method to decide when there is risk for resulting text loss is to evaluate if three or more packets were lost within one second. Then a t140block SHOULD be created with a marker for possible text loss <xref target="T140ad1" format="default"/> and assigned to the SSRC of the transmitter as a general input from the mixer.  
 </t>
 <t>
-Implementations MAY apply more refined methods for more reliable detection of if text was lost or not. Any refined method SHOULD rather falsely mark possible loss when there was no loss instead of not marking possible loss when there was loss. 
+Implementations MAY apply more refined methods for more reliable detection of if text was lost or not. Any refined method SHOULD prefer marking possible loss rather than not marking when it is uncertain if there was loss.
 </t>
 </section>
 <section numbered="true" toc="default"><name>Extracting text and handling recovery</name>
@@ -513,7 +503,7 @@ Unicode character 'BOM' is used as a start indication and sometimes used as a fi
     <name>Security for session control and media</name>
   <t>
 
-  Security SHOULD be applied on both session control and media. In applications where legacy endpoints without security may exist, a negotiation SHOULD be performed to decide if security by encryption will be applied. If no other security solution is mandated for the application, then RFC 8643 OSRTP <xref target="RFC8643" format="default"/> SHOULD be applied to negotiate SRTP media security with DTLS. Most SDP examples below are for simplicity expressed without the security additions. The principles (but not all details) for applying DTLS-SRTP <xref target="RFC5764" format="default"/> security is shown in a couple of the following examples.
+  Security SHOULD be applied on both session control and media. In applications where legacy endpoints without security may exist, a negotiation SHOULD be performed to decide if security by encryption will be applied. If no other security solution is mandated for the application, then OSRTP <xref target="RFC8643" format="default"/> SHOULD be applied to negotiate SRTP media security with DTLS. Most SDP examples below are for simplicity expressed without the security additions. The principles (but not all details) for applying DTLS-SRTP <xref target="RFC5764" format="default"/> security is shown in a couple of the following examples.
 
   </t>
   </section>
@@ -625,8 +615,8 @@ Unicode character 'BOM' is used as a start indication and sometimes used as a fi
   X R1: A3, Offset=330     |
   X P:  Empty              |
   X------------------------|
-  Packet 103 is assumed to be dropped in network problems. It
-  contains redundancy for A. Sending A3 as second level 
+  Packet 103 is assumed to be lost due to network problems.
+  It contains redundancy for A. Sending A3 as second level 
   redundancy is planned for 330 ms after packet 104.
   ]]></artwork>
         <artwork name="" type="" align="left" alt=""><![CDATA[
@@ -699,7 +689,7 @@ No primary is available in packet 106
   <name>Maximum character rate "CPS"</name>
 
 	  <t>
-	  The default maximum rate of reception of "text/t140" real-time text is in RFC 4103 <xref target="RFC4103" format="default"/> specified to be 30 characters per second. The value MAY be modified in the CPS parameter of the FMTP attribute in the media section for the "text/t140" media. A mixer combining real-time text from a number of sources may occasionally have a higher combined flow of text coming from the sources. Endpoints SHOULD therefore specify a suitable higher value for the CPS parameter, corresponding to its real reception capability. A value for "CPS" of 90 is the default for the "text/t140" stream in the "text/red" format when multi-party real-time text is negotiated. See RFC 4103 <xref target="RFC4103" format="default"/> for the format and use of the CPS parameter. The same rules apply for the multi-party case except for the default value.
+	  The default maximum rate of reception of "text/t140" real-time text is in RFC 4103 <xref target="RFC4103" format="default"/> specified to be 30 characters per second. The value MAY be modified in the CPS parameter of the FMTP attribute in the media section for the "text/t140" media. A mixer combining real-time text from a number of sources may occasionally have a higher combined flow of text coming from the sources. Endpoints SHOULD therefore specify a suitable higher value for the CPS parameter, corresponding to its real reception capability. A value for "CPS" of 90 SHALL be the default for the "text/t140" stream in the "text/red" format when multi-party real-time text is negotiated. See RFC 4103 <xref target="RFC4103" format="default"/> for the format and use of the CPS parameter. The same rules apply for the multi-party case except for the default value.
 	  </t>
     </section>
   </section>
@@ -808,14 +798,14 @@ The mixer mixing for multi-party unaware endpoints SHALL compose a simulated lim
         <section numbered="true" toc="default">
           <name>Actions by the mixer at reception from the call participants</name>
           <t>
-When text is received by the mixer from the different participants, the mixer SHALL recover text from redundancy if any packets are lost. The mark for lost text <xref target="T140ad1" format="default"/> SHOULD be inserted in the stream if unrecoverable loss appears. Any Unicode "BOM" characters, possibly used for keep-alive shall be deleted.
-The time of creation of text (retrieved from the RTP timestamp) SHALL be stored together with the received text from each source in queues for transmission to the recipients.
+When text is received by the mixer from the different participants, the mixer SHALL recover text from redundancy if any packets are lost. The mark for lost text <xref target="T140ad1" format="default"/> SHOULD be inserted in the stream if unrecoverable loss appears. Any Unicode "BOM" characters, possibly used for keep-alive SHALL be deleted.
+The time of creation of text (retrieved from the RTP timestamp) SHOULD be stored together with the received text from each source in queues for transmission to the recipients.
 </t>
         </section>
         <section numbered="true" toc="default">
           <name>Actions by the mixer for transmission to the recipients</name>
           <t>
-The following procedure SHOULD be applied for each recipient of multi-part text from the mixer.
+The following procedure SHOULD be applied for each multi-party unaware recipient of multi-party text from the mixer.
 </t>
           <t>
 The text for transmission SHOULD be formatted by the mixer for each receiving user for presentation in one single presentation area. Text received from a participant SHOULD NOT be included in transmission to that participant. When there is text available for transmission from the mixer to a receiving party from more than one participant, the mixer SHOULD switch between transmission of text from the different sources at suitable points in the transmitted stream.
@@ -1125,7 +1115,7 @@ The requirement to transfer information about the user in RTCP reports in SDES, 
 	  <section numbered="true" toc="default">
           <name>Changes included in draft-ietf-avtcore-multi-party-rtt-mix-12</name>
           <t>
-		  
+		  Changes according to responses on comments from Brian Rosen in Avtcore list on 2020-12-05 and -06.
 		  </t>
 		  </section>
 	  <section numbered="true" toc="default">
