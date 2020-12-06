@@ -58,10 +58,10 @@
 Real-time text mixers for multi-party sessions need to identify the source of each transmitted group of text so that the text can be presented by endpoints in suitable grouping with other text from the same source, while new text from other sources is also presented in readable grouping as received interleaved in real-time.
 </t>
       <t>
-Regional regulatory requirements specify provision of real-time text in multi-party calls. RFC 4103 mixer implementations can use traditional RTP functions for source identification, but the mixer source switching performance is limited when using the default transmission characteristics with redundancy.
+Regional regulatory requirements specify provision of real-time text in multi-party calls. RFC 4103 mixer implementations can use traditional RTP functions for source identification, but the performance of the mixer when giving turns for the different sources to transmit is limited when using the default transmission characteristics with redundancy.
 </t>
       <t>
-Enhancements for RFC 4103 real-time text mixing is provided in this document, suitable for a centralized conference model that enables source identification and source switching. The intended use is for real-time text mixers and multi-party-aware participant endpoints. The specified mechanism build on the standard use of the CSRC list in the RTP packet for source identification. The method makes use of the same "text/t140" and "text/red" formats as for two-party sessions.
+Enhancements for RFC 4103 real-time text mixing are provided in this document, suitable for a centralized conference model that enables source identification and rapidly interleaved transmission of text from different sources. The intended use is for real-time text mixers and participant endpoints capable of providing an efficient presentation or other treatment of a multi-party real-time text session. The specified mechanism builds on the standard use of the CSRC list in the RTP packet for source identification. The method makes use of the same "text/t140" and "text/red" formats as for two-party sessions.
 </t>
       <t>
  A capability exchange is specified so that it can be verified that a participant can handle the multi-party coded real-time text stream.  The capability is indicated by use of a media attribute "rtt-mixer".
@@ -70,7 +70,7 @@ Enhancements for RFC 4103 real-time text mixing is provided in this document, su
 The document updates RFC 4103<xref target="RFC4103" format="default"/>
 	    </t>
       <t>
- A specifications of how a mixer can format text for the case when the endpoint is not multi-party aware is also provided.
+ A specification of how a mixer can format text for the case when the endpoint is not multi-party aware is also provided.
       </t>
     </abstract>
   </front>
@@ -78,7 +78,7 @@ The document updates RFC 4103<xref target="RFC4103" format="default"/>
     <section numbered="true" toc="default">
       <name>Introduction</name>
       <t>
-RFC 4103<xref target="RFC4103" format="default"/> specifies use of RFC 3550 RTP <xref target="RFC3550" format="default"/> for transmission of real-time text (RTT) and the "text/t140" format. It also specifies a redundancy format "text/red" for increased robustness. RFC 4102 <xref target="RFC4102" format="default"/> registers the "text/red" format. Regional regulatory requirements specify provision of real-time text in multi-party calls.
+"RTP Payload for Text Conversation" <xref target="RFC4103" format="default"/> specifies use of RFC 3550 RTP <xref target="RFC3550" format="default"/> for transmission of real-time text (RTT) and the "text/t140" format. It also specifies a redundancy format "text/red" for increased robustness. RFC 4102 <xref target="RFC4102" format="default"/> registers the "text/red" format. Regional regulatory requirements specify provision of real-time text in multi-party calls.
 </t>
 <t>
   Real-time text is usually provided together with audio and sometimes with video in conversational sessions.
@@ -90,7 +90,7 @@ each participant is clearly readable, and its source and the relative timing of 
 in the display."
 </t>
 <t>
-Another requirement is that the mixing procedure must not introduce delays in the text streams that are experienced disturbing the real-time experience of the receiving users.
+Another requirement is that the mixing procedure must not introduce delays in the text streams that are experienced to be disturbing the real-time experience of the receiving users.
 </t>
       <t>
 The redundancy scheme of RFC 4103 <xref target="RFC4103" format="default"/> enables efficient transmission of redundant text in packets together with new text. However the redundancy header format has no source indicators for the redundant transmissions. The redundant parts in a packet must therefore be from the same source as the new text. The recommended transmission is one new and two redundant generations of text (T140blocks) in each packet and the recommended transmission interval for two-party use is 300 ms.
@@ -111,7 +111,7 @@ source of each transmitted group of text from a conference participant so that t
       </t>
 
 	    <t>
-	    The document updates RFC 4103<xref target="RFC4103" format="default"/> by introducing an attribute for indicating capability for the multi-party mixing case and rules for source indications and source switching.
+	    The document updates RFC 4103<xref target="RFC4103" format="default"/> by introducing an attribute for indicating capability for the multi-party mixing case and rules for source indications and interleaving of text from different sources.
 	    </t>
 
 	<section numbered="true" toc="default">
@@ -134,7 +134,7 @@ source of each transmitted group of text from a conference participant so that t
    The "text/red" format in RFC 4103 with shorter transmission interval, and indicating source in CSRC.
  </dt>
  <dd>
-   The "text/red" format with "text/t140" payload in a single RTP stream can be sent with 100 ms packet intervals instead of the regular 300 ms. The source is indicated in the CSRC field. Source switching can then be done every 100 ms while simultaneous transmission occurs. With five participants sending text simultaneously, the switching and transmission performance is good. With more simultaneously sending participants, there will be a noticeable jerkiness in text presentation. The jerkiness will be more expressed the more participants who send text simultaneously. With ten sending participants, the jerkiness will be about one second. Text sent from a source at the end of the period its text is sent by the mixer will have close to zero extra delay. Recent text will be presented with no or low delay. The one second jerkiness will be noticeable and slightly unpleasant, but corresponds in time to what typing humans often cause by hesitation or changing position while typing. A benefit of this method is that no new packet format needs to be introduced and implemented. Since simultaneous typing by more than two parties is very rare, this method can be used successfully with good performance. Recovery of text in case of packet loss is based on analysis of timestamps of received redundancy versus earlier received text. Negotiation is based on a new sdp media attribute "rtt-mixer". This method is selected to be the main one specified in this document.
+   The "text/red" format with "text/t140" payload in a single RTP stream can be sent with 100 ms packet intervals instead of the regular 300 ms. The source is indicated in the CSRC field. Transmission of packets with text from different sources can then be done every 100 ms while simultaneous transmission occurs. With five participants sending text simultaneously, the switching and transmission performance is good. With more simultaneously sending participants, there will be a noticeable jerkiness in text presentation. The jerkiness will be more expressed the more participants who send text simultaneously. With ten sending participants, the jerkiness will be about one second. Text sent from a source at the end of the period its text is sent by the mixer will have close to zero extra delay. Recent text will be presented with no or low delay. The one second jerkiness will be noticeable and slightly unpleasant, but corresponds in time to what typing humans often cause by hesitation or changing position while typing. A benefit of this method is that no new packet format needs to be introduced and implemented. Since simultaneous typing by more than two parties is very rare, this method can be used successfully with good performance. Recovery of text in case of packet loss is based on analysis of timestamps of received redundancy versus earlier received text. Negotiation is based on a new sdp media attribute "rtt-mixer". This method is selected to be the main one specified in this document.
 
  </dd>
     <dt>A new "text" media subtype with up to 15 sources in each packet.</dt>
@@ -793,7 +793,7 @@ If the presentation presents text from different sources in one common area, the
 	The principles and procedures below do not specify any new protocol elements. They are instead composed from the information in ITU-T T.140 <xref target="T140" format="default"/> and an ambition to provide a best effort presentation on an endpoint which has functions only for two-party calls.
         </t>
         <t>
-The mixer mixing for multi-party unaware endpoints SHALL compose a simulated limited multi-party RTT view suitable for presentation in one presentation area. The mixer SHALL group text in suitable groups and prepare for presentation of them by inserting a new line between them if the transmitted text did not already end with a new line. A presentable label SHOULD be composed and sent for the source initially in the session and after each source switch. With this procedure the time for source switching is depending on the actions of the users. In order to expedite source switch, a user can for example end its turn with a new line.
+The mixer mixing for multi-party unaware endpoints SHALL compose a simulated limited multi-party RTT view suitable for presentation in one presentation area. The mixer SHALL group text in suitable groups and prepare for presentation of them by inserting a new line between them if the transmitted text did not already end with a new line. A presentable label SHOULD be composed and sent for the source initially in the session and after each source switch. With this procedure the time for switching from transmission of text from one source to transmission of text from another source is depending on the actions of the users. In order to expedite source switch, a user can for example end its turn with a new line.
         </t>
         <section numbered="true" toc="default">
           <name>Actions by the mixer at reception from the call participants</name>
@@ -1116,6 +1116,9 @@ The requirement to transfer information about the user in RTCP reports in SDES, 
           <name>Changes included in draft-ietf-avtcore-multi-party-rtt-mix-12</name>
           <t>
 		  Changes according to responses on comments from Brian Rosen in Avtcore list on 2020-12-05 and -06.
+		  </t>
+		  <t>
+		  Changes according to responses to comments by Bernard Aboba in avtcore list 2020-12-06.
 		  </t>
 		  </section>
 	  <section numbered="true" toc="default">
