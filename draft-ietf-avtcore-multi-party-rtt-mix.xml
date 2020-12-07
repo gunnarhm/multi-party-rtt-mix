@@ -524,7 +524,7 @@ Unicode character 'BOM' is used as a start indication and sometimes used as a fi
 <t>
 Multi-party RTT can also be provided through an Selective Forwarding Unit (SFU). In that case, the offer will have multiple m-sections for RTT, and an answer acknowledging the use of an SFU would accept a number of m-sections for RTT. The offer may contain also the "rtt-mixer" sdp media attribute for the main RTT media when the offeror has capability for both multi-party methods, while an answer, selecting to use SFU MUST not include the "rtt-mixer" sdp media attribute.  
 </t>	  
-    </t>
+    
 
   <artwork name="" type="" align="left" alt=""><![CDATA[
 
