@@ -520,6 +520,7 @@ Unicode character 'BOM' is used as a start indication and sometimes used as a fi
     <name>SDP offer/answer examples</name>
     <t>
       This sections shows some examples of SDP for session negotiation of the real-time text media in SIP sessions. Audio is usually provided in the same session, and sometimes also video. The examples only show the part of importance for the real-time text media. The examples relate to the single RTP stream mixing for multi-party aware endpoints and for multi-party unaware endpoints. 
+	  </t>
 <t>
 Multi-party RTT can also be provided through an Selective Forwarding Unit (SFU). In that case, the offer will have multiple m-sections for RTT, and an answer acknowledging the use of an SFU would accept a number of m-sections for RTT. The offer may contain also the "rtt-mixer" sdp media attribute for the main RTT media when the offeror has capability for both multi-party methods, while an answer, selecting to use SFU MUST not include the "rtt-mixer" sdp media attribute.  
 </t>	  
