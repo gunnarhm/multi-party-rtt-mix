@@ -58,7 +58,7 @@
 Real-time text mixers for multi-party sessions need to identify the source of each transmitted group of text so that the text can be presented by endpoints in suitable grouping with other text from the same source, while new text from other sources is also presented in readable grouping as received interleaved in real-time.
 </t>
       <t>
-Regional regulatory requirements specify provision of real-time text in multi-party calls. RFC 4103 mixer implementations can use traditional RTP functions for source identification, but the performance of the mixer when giving turns for the different sources to transmit is limited when using the default transmission characteristics with redundancy.
+Use of RTT is increasing, and specifically, use in emergency calls is increasing.  Emergency call use requires multiparty mixing. RFC 4103 mixer implementations can use traditional RTP functions for source identification, but the performance of the mixer when giving turns for the different sources to transmit is limited when using the default transmission characteristics with redundancy.
 </t>
       <t>
 Enhancements for RFC 4103 real-time text mixing are provided in this document, suitable for a centralized conference model that enables source identification and rapidly interleaved transmission of text from different sources. The intended use is for real-time text mixers and participant endpoints capable of providing an efficient presentation or other treatment of a multi-party real-time text session. The specified mechanism builds on the standard use of the CSRC list in the RTP packet for source identification. The method makes use of the same "text/t140" and "text/red" formats as for two-party sessions.
@@ -81,7 +81,7 @@ The document updates RFC 4103<xref target="RFC4103" format="default"/>
     <section numbered="true" toc="default">
       <name>Introduction</name>
       <t>
-"RTP Payload for Text Conversation" <xref target="RFC4103" format="default"/> specifies use of RFC 3550 RTP <xref target="RFC3550" format="default"/> for transmission of real-time text (RTT) and the "text/t140" format. It also specifies a redundancy format "text/red" for increased robustness. RFC 4102 <xref target="RFC4102" format="default"/> registers the "text/red" format. Regional regulatory requirements specify provision of real-time text in multi-party calls.
+"RTP Payload for Text Conversation" <xref target="RFC4103" format="default"/> specifies use of RFC 3550 RTP <xref target="RFC3550" format="default"/> for transmission of real-time text (RTT) and the "text/t140" format. It also specifies a redundancy format "text/red" for increased robustness. RFC 4102 <xref target="RFC4102" format="default"/> registers the "text/red" format.
 </t>
 <t>
   Real-time text is usually provided together with audio and sometimes with video in conversational sessions.
