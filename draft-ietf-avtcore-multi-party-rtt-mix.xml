@@ -160,7 +160,7 @@ source with each transmitted group of text from a conference participant so that
    From some points of view, use of multiple RTP streams, one for each source, sent in the same RTP session would be efficient, and would use exactly the same packet format as <xref target="RFC4103" format="default"/> and the same payload type.
    A couple of relevant scenarios using multiple RTP-streams are specified in "RTP Topologies" <xref target="RFC7667" format="default"/>. One possibility is the RTP-translator model specified in RFC 7667 section 3.5 with the benefit of easily detected which source had unrecoverable loss. Another is the Selective Forwarding Middlebox topology specified in RFC 7667 section 3.7 that could enable end to end encryption. 
    However, the RTP implementation in both mixers and endpoints need to support multiple streams in the same RTP session in order to use this mechanism. For best deployment opportunity, it should be possible to upgrade existing endpoint solutions to be multi-party aware with a reasonable effort. There is currently a lack of support for
-   multi-stream RTP in certain implementation technologies. This fact made this solution not selected for inclusion in this document but may be of interest for future work.
+   multi-stream RTP in certain implementation technologies. This fact made this solution only briefly mentioned as an option in this document.
  </dd>
  <dt>
    The "text/red" format in RFC 4103 with shorter transmission interval, and indicating source in CSRC.
@@ -313,7 +313,7 @@ When text is conveyed by a mixer during a multi-party session, a CSRC list SHALL
           </section>
           <section numbered="true" toc="default"><name>Keep-alive</name>
       	    <t>
-      After that, the transmitter SHALL send keep-alive traffic to the receiver(s) at regular intervals when no other traffic has occurred during that interval, if that is decided for the actual connection. Recommendations for keep-alive can be found in <xref target="RFC6263" format="default"/>.
+      After that, the transmitter SHALL send keep-alive traffic to the receiver(s) at regular intervals when no other traffic has occurred during that interval, if that is decided for the actual connection. It is RECOMMENDED to use the keep-alive solution from <xref target="RFC6263" format="default"/>.
       	    </t>
           </section>
           <section numbered="true" toc="default"><name>Transmission interval</name>
@@ -511,7 +511,7 @@ Unicode character 'BOM' is used as a start indication and sometimes used as a fi
     <name>Security for session control and media</name>
   <t>
 
-  Security SHOULD be applied on both session control and media. In applications where legacy endpoints without security may exist, a negotiation SHOULD be performed to decide if security by encryption will be applied. If no other security solution is mandated for the application, then OSRTP <xref target="RFC8643" format="default"/> SHOULD be applied to negotiate SRTP media security with DTLS. Most SDP examples below are for simplicity expressed without the security additions. The principles (but not all details) for applying DTLS-SRTP <xref target="RFC5764" format="default"/> security is shown in a couple of the following examples.
+  Security SHOULD be applied by use of SIP over TLS by default according to <xref target="RFC5630" format="default"/> section 3.1.3 on session control level and by default using DTLS-SRTP <xref target="RFC5764" format="default"/> on media level. In applications where legacy endpoints without security may exist, a negotiation SHOULD be performed to decide if security by encryption on media level will be applied. If no other security solution is mandated for the application, then OSRTP <xref target="RFC8643" format="default"/> SHOULD be applied to negotiate SRTP media security with DTLS. Most SDP examples below are for simplicity expressed without the security additions. The principles (but not all details) for applying DTLS-SRTP <xref target="RFC5764" format="default"/> security is shown in a couple of the following examples.
 
   </t>
   </section>
@@ -519,7 +519,10 @@ Unicode character 'BOM' is used as a start indication and sometimes used as a fi
   <section anchor="SDP-examples2" numbered="true" toc="default">
     <name>SDP offer/answer examples</name>
     <t>
-      This sections shows some examples of SDP for session negotiation of the real-time text media in SIP sessions. Audio is usually provided in the same session, and sometimes also video. The examples only show the part of importance for the real-time text media.
+      This sections shows some examples of SDP for session negotiation of the real-time text media in SIP sessions. Audio is usually provided in the same session, and sometimes also video. The examples only show the part of importance for the real-time text media. The examples relate to the single RTP stream mixing for multi-party aware endpoints and for multi-party unaware endpoints. 
+<t>
+Multi-party RTT can also be provided through an Selective Forwarding Unit (SFU). In that case, the offer will have multiple m-sections for RTT, and an answer acknowledging the use of an SFU would accept a number of m-sections for RTT. The offer may contain also the "rtt-mixer" sdp media attribute for the main RTT media when the offeror has capability for both multi-party methods, while an answer, selecting to use SFU MUST not include the "rtt-mixer" sdp media attribute.  
+</t>	  
     </t>
 
   <artwork name="" type="" align="left" alt=""><![CDATA[
@@ -1414,6 +1417,7 @@ Note: The CSRC-list in an RTP packet only includes participants who's text is in
         <xi:include href="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.4103.xml"/>
         <xi:include href="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.3550.xml"/>
         <xi:include href="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.4566.xml"/>
+		<xi:include href="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.5630.xml"/>
         <xi:include href="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.5764.xml"/>
 	<xi:include href="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6263.xml"/>
 	<xi:include href="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7667.xml"/>
