@@ -221,6 +221,16 @@ Presentation of text from multiple parties is prepared by the mixer in one singl
   <t>
   This section contains a brief introduction of the three methods specified in this document. The negotiation between the methods is also specified.
   </t>
+  
+  <section anchor="compliance" numbered="true" toc="default">
+    <name>Compliance statement considerations</name>
+    <t>
+	Compliance requirements or claims to this document MUST state for which of the three specified methods they are valid.  
+	</t>
+	<t>
+	Additionally, especially the RTP multi-stream method requires additional specification of the selected RTP topology and details of session negotiation and handling of packet headers specific for the intended application.
+	</t>
+	</section>
   <section anchor="negouse" numbered="true" toc="default">
     <name>The RTP-mixer based solution for multi-party aware endpoints</name>
     <t>
@@ -237,10 +247,13 @@ The detailed procedures for the RTP-mixer multi-party aware case are specified i
   <section numbered="true" toc="default">
     <name>Multiple RTP streams</name>
 <t>
-This method makes use of the possibility to have multiple RTP streams in one RTP session between a mixer and an endpoint. Each stream carries text from a participant actively sending text using <xref target="RFC4103" format="default"/>. The streams are recognized by their SSRC fields in the RTP packets. A number of RTP topologies using multiple RTP streams in one RTP session are described in RFC 7667  <xref target="RFC7667" format="default"/>, where section 3.6.2 "Media Switching Mixer" and section 3.7 "Selective Forwarding Middlebox" may be most suitable. This document does not recommend any specific of these topologies, but instead points out specific considerations for successful application of multiple RTP streams in one RTP session for multi-party RTT.
+This method makes use of the possibility to have multiple RTP streams in one RTP session between a mixer and an endpoint. Each stream carries text from a participant actively sending text using <xref target="RFC4103" format="default"/>. The streams are recognized by their SSRC fields in the RTP packets. A number of RTP topologies using multiple RTP streams in one RTP session are described in RFC 7667  <xref target="RFC7667" format="default"/>, where section 3.7 "Selective Forwarding Middlebox" may be most suitable. This document does not recommend any specific of these topologies, but instead points out specific considerations for successful application of multiple RTP streams in one RTP session for multi-party RTT.
 </t>
 <t>
-These considerations are specified in <xref target="multi-stream" format="default"/>.
+A benefit of an RTP multi-stream solution is that it may be possible to arrange end-to-end encryption of the packet contents. Another benefit is that there is little processing of each packet in the mixer.  
+</t>
+<t>
+The considerations for the RTP multi-stream multi-party method are specified in <xref target="multi-stream" format="default"/>.
 </t>
 </section>
   <section numbered="true" toc="default">
@@ -317,10 +330,13 @@ The CC field SHALL show the number of members in the CSRC list, which SHALL be o
 </t>
 
   <t>
-  A party not acting as a mixer MUST not include the CSRC list.
+  A party not acting as a mixer MUST not insert the CSRC list.
       </t>
       <t>
-When text is conveyed by a mixer during a multi-party session, a CSRC list SHALL be included in the packet. The single member in the CSRC-list SHALL contain the SSRC of the source of the T140blocks in the packet. When redundancy is used, the recommended level of redundancy is to use one primary and two redundant generations of T140blocks. In some cases, a primary or redundant T140block is empty, but is still represented by a member in the redundancy header.
+When text is conveyed by a mixer during a multi-party session, a CSRC list SHALL be included in the packet. The single member in the CSRC-list SHALL contain the SSRC of the source of the T140blocks in the packet. 
+</t>
+<t>
+When redundancy is used, the recommended level of redundancy is to use one primary and two redundant generations of T140blocks. In some cases, a primary or redundant T140block is empty, but is still represented by a member in the redundancy header.
 </t>
 <t>
   From other aspects, the contents of the RTP packets are equal to what is specified in <xref target="RFC4103" format="default"/>.
@@ -733,10 +749,31 @@ No primary is available in packet 106
   </section>
 <section anchor="multi-stream" numbered="true" toc="default">
   <name>Considerations for RTP multi-stream solutions</name>
-    <section numbered="true" toc="default">
 	<t>
-	
+	In the RTP multi-stream solution, the mixer send the packets on to the participants relatively untouched. The mixer and the receivers MUST be capable of handling multiple RTP streams in the same SIP session.
 	</t>
+	<section numbered="true" toc="default">
+	<name>Negotiation details</name>
+	<t>
+	It causes complexity in the mixer to be able to handle different payload types and media parameters. Therefore is is RECOMMENDED that all participants and the mixer use the "text/red" format with the default redundancy level.  
+	</t>
+	
+<t>
+The payload type numbers for the "text/red" and "text/t140" formats will very likely be different on both sides of the mixer. That has implications for the decoding in the endpoints.  
+</t>
+	</section>
+	<section numbered="true" toc="default">
+	<name>Use of fields in the RTP packets</name>
+	<t>
+	The packet contents SHALL be as for RFC 4103 <xref target="RFC4103" format="default"/>. Some RTP header fields MAY need modification by the mixer depending on the RTP topology selected and the operation of the mixer if it periodically needs to exclude some sources from having its packets conveyed. 
+</t>
+<t>
+The redundancy header belongs to the payload and is not modified by the mixer. The PT fields in the redundancy headers are not modified by the mixer and will therefore be different from what was negotiated between the mixer and the receiver. Since "text/t140" is the only format defined for redundant transmission by the "text/red" format, the receiver SHALL just rely on that the provided PT in the redundancy header relates to the "text/t140" format. 
+</t>
+<t>
+The SSRC field is likely to be modified by the mixer. In some RTP topologies there is a fixed set of SSRCs between the mixer and the receiver and the sources take turns of using them.  	
+		</t>
+		
 	</section>
       <name>Presentation level considerations</name>
       <t>
@@ -827,7 +864,7 @@ If the presentation presents text from different sources in one common area, the
       <section anchor="UnawareFormat" numbered="true" toc="default">
         <name>Multi-party mixing for multi-party unaware endpoints</name>
         <t>
-    When the mixer has indicated multi-party capability by the "rtt-mixer" sdp attribute in an SDP negotiation, but the multi-party capability negotiation fails with an endpoint, then the agreed "text/red" or "text/t140" format SHALL be used and the mixer SHOULD compose a best-effort presentation of multi-party real-time text in one stream intended to be presented by an endpoint with no multi-party awareness.
+    When the mixer has indicated multi-party RTT capability in an SDP negotiation, but the multi-party capability negotiation fails with an endpoint, then the agreed "text/red" or "text/t140" format SHALL be used and the mixer SHOULD compose a best-effort presentation of multi-party real-time text in one stream intended to be presented by an endpoint with no multi-party awareness.
         </t>
         <t>
 	This presentation format has functional limitations and SHOULD be used only to enable participation in multi-party calls by legacy deployed endpoints implementing only RFC 4103 without any multi-party extensions specified in this document.
@@ -1077,7 +1114,7 @@ The congestion considerations and recommended actions from RFC 4103 <xref target
         The first action in case of congestion SHOULD be to temporarily increase the transmission interval up to two seconds.
       </t>
       <t>
-        If the unlikely situation appears that more than 20 participants in a conference send text simultaneously, it will take more than 7 seconds between presentation of text from each of these participants. More time than that can cause confusion in the session. It is therefore RECOMMENDED that the mixer discards such text in excess inserts a general indication of possible text loss <xref target="T140ad1" format="default"/> in the session. If the main text contributor is indicated in any way, the mixer MAY avoid deleting text from that participant.
+        If the very unlikely situation appears that more than 50 participants in a conference send text simultaneously, it will take more than 5 seconds between presentation of text from each of these participants. More time than that can cause confusion in the session. It is therefore RECOMMENDED that the mixer discards such text in excess. If the RTP-mixer method is used, the mixer SHOULD also insert a general indication of possible text loss <xref target="T140ad1" format="default"/> in the session. If the main text contributor is indicated in any way, the mixer MAY avoid deleting text from that participant.
       </t>
     </section>
     <section anchor="Acknowledgements" numbered="true" toc="default">
@@ -1171,6 +1208,9 @@ The requirement to transfer information about the user in RTCP reports in SDES, 
 		  </t>
 		  <t>
 		  Changes according to responses to comments by Bernard Aboba in avtcore list 2020-12-06.
+		  </t>
+		  <t>
+		  Introduction of an RTP multi-stream mixing method as proposed by Bernard Aboba. 
 		  </t>
 		  <t>
 		  Changes clarifying how to open and close T.140 data channels included in 6.2 after comments by Lorenzo Miniero.
